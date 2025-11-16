@@ -23,3 +23,11 @@ public protocol WorkoutCommandLoadingView {
 public protocol ExerciseSetLoggingView {
 	func display(_ viewModel: ExerciseSetLoggingViewModel)
 }
+
+public protocol RestTimerView {
+	func display(_ viewModel: RestTimerViewModel)
+}
+
+public protocol RestTimerAlertView {
+	func display(_ viewModel: RestTimerAlertViewModel)
+}

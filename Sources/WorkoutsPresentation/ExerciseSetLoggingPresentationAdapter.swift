@@ -3,10 +3,12 @@ import WorkoutsDomain
 
 public final class ExerciseSetLoggingPresentationAdapter {
 	private let logging: ExerciseSetLogging
+	private let restTimerHandler: RestTimerHandling?
 	public var presenter: ExerciseSetLoggingPresenter?
 	
-	public init(logging: ExerciseSetLogging) {
+	public init(logging: ExerciseSetLogging, restTimerHandler: RestTimerHandling? = nil) {
 		self.logging = logging
+		self.restTimerHandler = restTimerHandler
 	}
 	
 	public func addSet(to workoutID: UUID, exerciseID: UUID, request: ExerciseSetRequest) {
@@ -15,6 +17,7 @@ public final class ExerciseSetLoggingPresentationAdapter {
 			switch result {
 			case let .success(logResult):
 				self?.presenter?.didFinishLogging(with: logResult, action: .added)
+				self?.restTimerHandler?.handleSetCompletion(for: exerciseID)
 			case let .failure(error):
 				self?.presenter?.didFinish(with: error)
 			}
@@ -27,6 +30,7 @@ public final class ExerciseSetLoggingPresentationAdapter {
 			switch result {
 			case let .success(logResult):
 				self?.presenter?.didFinishLogging(with: logResult, action: .updated)
+				self?.restTimerHandler?.handleSetCompletion(for: exerciseID)
 			case let .failure(error):
 				self?.presenter?.didFinish(with: error)
 			}

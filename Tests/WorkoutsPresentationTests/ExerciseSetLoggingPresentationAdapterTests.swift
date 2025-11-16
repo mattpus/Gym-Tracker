@@ -7,7 +7,8 @@ final class ExerciseSetLoggingPresentationAdapterTests: XCTestCase {
 	
 	func test_addSet_requestsLoggingAndNotifiesPresenter() {
 		let useCase = ExerciseSetLoggingSpy()
-		let (sut, view) = makeSUT(logging: useCase)
+		let restTimer = RestTimerHandlerSpy()
+		let (sut, view) = makeSUT(logging: useCase, restTimerHandler: restTimer)
 		let workoutID = UUID()
 		let exerciseID = UUID()
 		let request = ExerciseSetRequest(repetitions: 8, weight: 60, duration: nil)
@@ -28,6 +29,7 @@ final class ExerciseSetLoggingPresentationAdapterTests: XCTestCase {
 			.logging(result.workout, result.exercise, result.set, result.previousSet, .added),
 			.loading(false)
 		])
+		XCTAssertEqual(restTimer.handledExerciseIDs, [exerciseID])
 	}
 	
 	func test_updateSet_notifiesPresenterOnError() {
@@ -58,8 +60,8 @@ final class ExerciseSetLoggingPresentationAdapterTests: XCTestCase {
 	
 	// MARK: - Helpers
 	
-	private func makeSUT(logging: ExerciseSetLoggingSpy, file: StaticString = #filePath, line: UInt = #line) -> (sut: ExerciseSetLoggingPresentationAdapter, view: ViewSpy) {
-		let sut = ExerciseSetLoggingPresentationAdapter(logging: logging)
+	private func makeSUT(logging: ExerciseSetLoggingSpy, restTimerHandler: RestTimerHandling? = nil, file: StaticString = #filePath, line: UInt = #line) -> (sut: ExerciseSetLoggingPresentationAdapter, view: ViewSpy) {
+		let sut = ExerciseSetLoggingPresentationAdapter(logging: logging, restTimerHandler: restTimerHandler)
 		let view = ViewSpy()
 		let presenter = ExerciseSetLoggingPresenter(loggingView: view, loadingView: view, errorView: view)
 		sut.presenter = presenter
@@ -133,3 +135,10 @@ final class ExerciseSetLoggingPresentationAdapterTests: XCTestCase {
 		}
 	}
 }
+	private final class RestTimerHandlerSpy: RestTimerHandling {
+		private(set) var handledExerciseIDs = [UUID]()
+		
+		func handleSetCompletion(for exerciseID: UUID) {
+			handledExerciseIDs.append(exerciseID)
+		}
+	}
