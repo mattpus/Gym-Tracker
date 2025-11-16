@@ -40,3 +40,31 @@ public struct WorkoutCommandLoadingViewModel: Equatable {
 		self.isLoading = isLoading
 	}
 }
+
+public struct ExerciseSetLoggingViewModel: Equatable {
+	public enum Action: Equatable {
+		case added
+		case updated
+		case deleted
+	}
+	
+	public let workout: Workout
+	public let exercise: Exercise
+	public let set: ExerciseSet?
+	public let previousSet: ExerciseSet?
+	public let action: Action
+	
+	public init(
+		workout: Workout,
+		exercise: Exercise,
+		set: ExerciseSet?,
+		previousSet: ExerciseSet?,
+		action: Action
+	) {
+		self.workout = workout
+		self.exercise = exercise
+		self.set = set
+		self.previousSet = previousSet
+		self.action = action
+	}
+}

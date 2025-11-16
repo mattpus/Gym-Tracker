@@ -2,10 +2,17 @@ import Foundation
 @testable import WorkoutsDomain
 
 final class WorkoutRepositorySpy: WorkoutRepository {
-	enum Message: Equatable {
-		case load
-		case save([Workout])
+enum Message: Equatable {
+	case load
+	case save([Workout])
+	
+	var savedWorkouts: [Workout]? {
+		if case let .save(workouts) = self {
+			return workouts
+		}
+		return nil
 	}
+}
 	
 	private(set) var messages = [Message]()
 	var loadResult: Result<[Workout], Error> = .success([])

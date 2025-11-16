@@ -19,3 +19,7 @@ public protocol WorkoutCommandView {
 public protocol WorkoutCommandLoadingView {
 	func display(_ viewModel: WorkoutCommandLoadingViewModel)
 }
+
+public protocol ExerciseSetLoggingView {
+	func display(_ viewModel: ExerciseSetLoggingViewModel)
+}
