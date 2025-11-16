@@ -1,6 +1,6 @@
 import Foundation
 
-public final class DefaultRestTimerController: RestTimerController, @unchecked Sendable {
+public actor DefaultRestTimerController: RestTimerController {
 	private struct ActiveTimer {
 		var configuration: RestTimerConfiguration
 		var remaining: TimeInterval
@@ -9,90 +9,65 @@ public final class DefaultRestTimerController: RestTimerController, @unchecked S
 	}
 	
 	private var timers = [UUID: ActiveTimer]()
-	private let queue: DispatchQueue
-	private let schedulerFactory: (DispatchQueue) -> RestTimerScheduler
-	private var tickHandlers = [TickHandler]()
+	private var observers = [TickHandler]()
+	private let schedulerFactory: () -> RestTimerScheduler
 	
-	public convenience init(queue: DispatchQueue = DispatchQueue(label: "RestTimerController")) {
-		self.init(queue: queue, schedulerFactory: DefaultRestTimerController.makeDefaultScheduler)
-	}
-	
-	public init(
-		queue: DispatchQueue,
-		schedulerFactory: @escaping (DispatchQueue) -> RestTimerScheduler
-	) {
-		self.queue = queue
+	public init(schedulerFactory: @escaping () -> RestTimerScheduler = { DispatchRestTimerScheduler() }) {
 		self.schedulerFactory = schedulerFactory
 	}
 	
 	public func enable(for configuration: RestTimerConfiguration) {
-		queue.sync(execute: {
-			var active = timers[configuration.exerciseID] ?? ActiveTimer(configuration: configuration, remaining: configuration.duration, isRunning: false, scheduler: nil)
-			active.configuration = configuration
-			active.remaining = configuration.duration
-			timers[configuration.exerciseID] = active
-		})
+		var active = timers[configuration.exerciseID] ?? ActiveTimer(configuration: configuration, remaining: configuration.duration, isRunning: false, scheduler: nil)
+		active.configuration = configuration
+		active.remaining = configuration.duration
+		timers[configuration.exerciseID] = active
 	}
 	
 	public func disable(exerciseID: UUID) {
-		queue.sync(execute: {
-			guard let timer = timers[exerciseID] else { return }
-			timer.scheduler?.cancel()
-			timers[exerciseID] = nil
-			
-			let state = RestTimerState(exerciseID: exerciseID, remaining: 0, isRunning: false)
-			notify(state)
-		})
+		guard let timer = timers[exerciseID] else { return }
+		timer.scheduler?.cancel()
+		timers[exerciseID] = nil
+		notify(.init(exerciseID: exerciseID, remaining: 0, isRunning: false))
 	}
 	
 	public func toggle(for exerciseID: UUID) {
-		queue.sync(execute: {
-			guard var timer = timers[exerciseID] else { return }
-			if timer.isRunning {
-				timer.isRunning = false
-				timer.scheduler?.cancel()
-				timer.scheduler = nil
-			} else {
-				startTimer(for: exerciseID, activeTimer: &timer)
-			}
-			timers[exerciseID] = timer
-		})
+		guard var timer = timers[exerciseID] else { return }
+		if timer.isRunning {
+			timer.isRunning = false
+			timer.scheduler?.cancel()
+			timer.scheduler = nil
+		} else {
+			startTimer(for: exerciseID, activeTimer: &timer)
+		}
+		timers[exerciseID] = timer
 	}
 	
 	public func startIfEnabled(afterSetFor exerciseID: UUID) {
-		queue.sync(execute: {
-			guard var timer = timers[exerciseID] else { return }
-			timer.remaining = timer.configuration.duration
-			startTimer(for: exerciseID, activeTimer: &timer)
-			timers[exerciseID] = timer
-		})
+		guard var timer = timers[exerciseID] else { return }
+		timer.remaining = timer.configuration.duration
+		startTimer(for: exerciseID, activeTimer: &timer)
+		timers[exerciseID] = timer
 	}
 	
 	public func cancel(exerciseID: UUID) {
-		queue.sync(execute: {
-			guard var timer = timers[exerciseID] else { return }
-			timer.scheduler?.cancel()
-			timer.scheduler = nil
-			timer.isRunning = false
-			timers[exerciseID] = timer
-			
-			let state = RestTimerState(exerciseID: exerciseID, remaining: timer.remaining, isRunning: false)
-			notify(state)
-		})
+		guard var timer = timers[exerciseID] else { return }
+		timer.scheduler?.cancel()
+		timer.scheduler = nil
+		timer.isRunning = false
+		timers[exerciseID] = timer
+		notify(.init(exerciseID: exerciseID, remaining: timer.remaining, isRunning: false))
 	}
 	
 	public func observe(_ handler: @escaping TickHandler) {
-		queue.sync(execute: {
-			tickHandlers.append(handler)
-		})
+		observers.append(handler)
 	}
 	
 	private func startTimer(for exerciseID: UUID, activeTimer: inout ActiveTimer) {
 		activeTimer.scheduler?.cancel()
 		activeTimer.isRunning = true
-		let scheduler = schedulerFactory(queue)
+		let scheduler = schedulerFactory()
 		scheduler.start { [weak self] in
-			self?.handleTick(for: exerciseID)
+			await self?.handleTick(for: exerciseID)
 		}
 		activeTimer.scheduler = scheduler
 	}
@@ -106,45 +81,44 @@ public final class DefaultRestTimerController: RestTimerController, @unchecked S
 			timer.scheduler = nil
 		}
 		timers[exerciseID] = timer
-		let state = RestTimerState(exerciseID: exerciseID, remaining: timer.remaining, isRunning: timer.isRunning)
-		notify(state)
+		notify(.init(exerciseID: exerciseID, remaining: timer.remaining, isRunning: timer.isRunning))
 	}
 	
 	private func notify(_ state: RestTimerState) {
-		for handler in tickHandlers {
-			handler(state)
+		for observer in observers {
+			Task {
+				await observer(state)
+			}
 		}
-	}
-	
-	private static func makeDefaultScheduler(queue: DispatchQueue) -> RestTimerScheduler {
-		DispatchRestTimerScheduler(queue: queue)
 	}
 }
 
 public protocol RestTimerScheduler {
-	func start(_ tick: @escaping @Sendable () -> Void)
+	func start(_ tick: @escaping @Sendable () async -> Void)
 	func cancel()
 }
 
-private final class DispatchRestTimerScheduler: RestTimerScheduler {
-	private let queue: DispatchQueue
-	private var timer: DispatchSourceTimer?
+public final class DispatchRestTimerScheduler: RestTimerScheduler {
+	private var task: Task<Void, Never>?
+	private let intervalNanoseconds: UInt64
 	
-	init(queue: DispatchQueue) {
-		self.queue = queue
+	public init(intervalNanoseconds: UInt64 = 1_000_000_000) {
+		self.intervalNanoseconds = intervalNanoseconds
 	}
 	
-	func start(_ tick: @escaping @Sendable () -> Void) {
-		timer?.cancel()
-		let source = DispatchSource.makeTimerSource(queue: queue)
-		source.schedule(deadline: .now(), repeating: 1)
-		source.setEventHandler(handler: tick)
-		timer = source
-		source.resume()
+	public func start(_ tick: @escaping @Sendable () async -> Void) {
+		task?.cancel()
+		let interval = intervalNanoseconds
+		task = Task {
+			while !Task.isCancelled {
+				try? await Task.sleep(nanoseconds: interval)
+				await tick()
+			}
+		}
 	}
 	
-	func cancel() {
-		timer?.cancel()
-		timer = nil
+	public func cancel() {
+		task?.cancel()
+		task = nil
 	}
 }

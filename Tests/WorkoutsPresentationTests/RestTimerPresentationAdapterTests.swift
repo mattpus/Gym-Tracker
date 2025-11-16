@@ -5,45 +5,58 @@ import WorkoutsDomain
 @MainActor
 final class RestTimerPresentationAdapterTests: XCTestCase {
 	
-	func test_enable_usesConfigurationProvider() {
+	func test_enable_usesConfigurationProvider() async {
 		let controller = RestTimerControllerSpy()
 		let config = RestTimerConfiguration(duration: 30, exerciseID: UUID())
 		let sut = RestTimerPresentationAdapter(controller: controller) { _ in config }
 		
-		sut.enable(for: config.exerciseID)
+		await sut.enable(for: config.exerciseID)
 		
-		XCTAssertEqual(controller.messages, [.enable(config)])
+		let messages = await controller.messages
+		XCTAssertEqual(messages, [.enable(config)])
 	}
 	
-	func test_toggle_delegatesToController() {
+	func test_toggle_delegatesToController() async {
 		let controller = RestTimerControllerSpy()
 		let sut = RestTimerPresentationAdapter(controller: controller, configurationProvider: { _ in nil })
 		let id = UUID()
 		
-		sut.toggle(for: id)
+		await sut.toggle(for: id)
 		
-		XCTAssertEqual(controller.messages, [.toggle(id)])
+		let messages = await controller.messages
+		XCTAssertEqual(messages, [.toggle(id)])
 	}
 	
-	func test_handleSetCompletion_startsTimerIfEnabled() {
+	func test_handleSetCompletion_startsTimerIfEnabled() async {
 		let controller = RestTimerControllerSpy()
 		let sut = RestTimerPresentationAdapter(controller: controller, configurationProvider: { _ in nil })
 		let id = UUID()
 		
-		sut.handleSetCompletion(for: id)
+		await sut.handleSetCompletion(for: id)
 		
-		XCTAssertEqual(controller.messages, [.startAfter(id)])
+		let messages = await controller.messages
+		XCTAssertEqual(messages, [.startAfter(id)])
 	}
 	
-	func test_controllerTicks_areForwardedToPresenter() {
+	func test_controllerTicks_areForwardedToPresenter() async {
 		let controller = RestTimerControllerSpy()
+		let observeExp = expectation(description: "observe")
 		let view = RestTimerViewSpy()
 		let presenter = RestTimerPresenter(restTimerView: view, alertView: view)
 		let sut = RestTimerPresentationAdapter(controller: controller, configurationProvider: { _ in nil })
 		sut.presenter = presenter
 		let state = RestTimerState(exerciseID: UUID(), remaining: 10, isRunning: true)
 		
-		controller.handler?(state)
+		Task {
+			while await controller.handler == nil {
+				try? await Task.sleep(nanoseconds: 10_000_000)
+			}
+			observeExp.fulfill()
+		}
+		
+		await fulfillment(of: [observeExp], timeout: 1.0)
+		let handler = await controller.handler
+		await handler?(state)
 		
 		XCTAssertEqual(view.timerViewModels, [
 			RestTimerViewModel(exerciseID: state.exerciseID, remaining: 10, isRunning: true)
@@ -52,7 +65,7 @@ final class RestTimerPresentationAdapterTests: XCTestCase {
 	
 	// MARK: - Helpers
 	
-	private final class RestTimerControllerSpy: RestTimerController {
+	private actor RestTimerControllerSpy: RestTimerController {
 		enum Message: Equatable {
 			case enable(RestTimerConfiguration)
 			case disable(UUID)
@@ -61,31 +74,39 @@ final class RestTimerPresentationAdapterTests: XCTestCase {
 			case cancel(UUID)
 		}
 		
-		private(set) var messages = [Message]()
-		var handler: TickHandler?
+		private var recordedMessages = [Message]()
+		private var tickHandler: TickHandler?
 		
-		func enable(for configuration: RestTimerConfiguration) {
-			messages.append(.enable(configuration))
+		var messages: [Message] {
+			get async { recordedMessages }
 		}
 		
-		func disable(exerciseID: UUID) {
-			messages.append(.disable(exerciseID))
+		var handler: TickHandler? {
+			get async { tickHandler }
 		}
 		
-		func toggle(for exerciseID: UUID) {
-			messages.append(.toggle(exerciseID))
+		func enable(for configuration: RestTimerConfiguration) async {
+			recordedMessages.append(.enable(configuration))
 		}
 		
-		func startIfEnabled(afterSetFor exerciseID: UUID) {
-			messages.append(.startAfter(exerciseID))
+		func disable(exerciseID: UUID) async {
+			recordedMessages.append(.disable(exerciseID))
 		}
 		
-		func cancel(exerciseID: UUID) {
-			messages.append(.cancel(exerciseID))
+		func toggle(for exerciseID: UUID) async {
+			recordedMessages.append(.toggle(exerciseID))
 		}
 		
-		func observe(_ handler: @escaping TickHandler) {
-			self.handler = handler
+		func startIfEnabled(afterSetFor exerciseID: UUID) async {
+			recordedMessages.append(.startAfter(exerciseID))
+		}
+		
+		func cancel(exerciseID: UUID) async {
+			recordedMessages.append(.cancel(exerciseID))
+		}
+		
+		func observe(_ handler: @escaping TickHandler) async {
+			tickHandler = handler
 		}
 	}
 	

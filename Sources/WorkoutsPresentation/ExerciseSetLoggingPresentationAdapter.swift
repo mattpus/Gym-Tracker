@@ -1,6 +1,7 @@
 import Foundation
 import WorkoutsDomain
 
+@MainActor
 public final class ExerciseSetLoggingPresentationAdapter {
 	private let logging: ExerciseSetLogging
 	private let restTimerHandler: RestTimerHandling?
@@ -17,7 +18,12 @@ public final class ExerciseSetLoggingPresentationAdapter {
 			switch result {
 			case let .success(logResult):
 				self?.presenter?.didFinishLogging(with: logResult, action: .added)
-				self?.restTimerHandler?.handleSetCompletion(for: exerciseID)
+				if let handler = self?.restTimerHandler {
+					Task { @MainActor [weak handler] in
+						guard let handler else { return }
+						await handler.handleSetCompletion(for: exerciseID)
+					}
+				}
 			case let .failure(error):
 				self?.presenter?.didFinish(with: error)
 			}
@@ -30,7 +36,12 @@ public final class ExerciseSetLoggingPresentationAdapter {
 			switch result {
 			case let .success(logResult):
 				self?.presenter?.didFinishLogging(with: logResult, action: .updated)
-				self?.restTimerHandler?.handleSetCompletion(for: exerciseID)
+				if let handler = self?.restTimerHandler {
+					Task { @MainActor [weak handler] in
+						guard let handler else { return }
+						await handler.handleSetCompletion(for: exerciseID)
+					}
+				}
 			case let .failure(error):
 				self?.presenter?.didFinish(with: error)
 			}

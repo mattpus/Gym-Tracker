@@ -19,8 +19,14 @@ final class ExerciseSetLoggingPresentationAdapterTests: XCTestCase {
 			previousSet: nil
 		)
 		
+		let exp = expectation(description: "Wait for rest timer")
+		restTimer.onHandle = {
+			exp.fulfill()
+		}
+		
 		sut.addSet(to: workoutID, exerciseID: exerciseID, request: request)
 		useCase.completeAdd(with: .success(result))
+		wait(for: [exp], timeout: 1.0)
 		
 		XCTAssertEqual(useCase.addMessages.count, 1)
 		XCTAssertEqual(view.events, [
@@ -135,10 +141,12 @@ final class ExerciseSetLoggingPresentationAdapterTests: XCTestCase {
 		}
 	}
 }
-	private final class RestTimerHandlerSpy: RestTimerHandling {
-		private(set) var handledExerciseIDs = [UUID]()
-		
-		func handleSetCompletion(for exerciseID: UUID) {
-			handledExerciseIDs.append(exerciseID)
-		}
+private final class RestTimerHandlerSpy: RestTimerHandling {
+	private(set) var handledExerciseIDs = [UUID]()
+	var onHandle: (() -> Void)?
+	
+	func handleSetCompletion(for exerciseID: UUID) async {
+		handledExerciseIDs.append(exerciseID)
+		onHandle?()
 	}
+}

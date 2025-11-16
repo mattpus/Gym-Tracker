@@ -1,10 +1,12 @@
 import Foundation
 import WorkoutsDomain
 
+@MainActor
 public protocol RestTimerHandling: AnyObject {
-	func handleSetCompletion(for exerciseID: UUID)
+	func handleSetCompletion(for exerciseID: UUID) async
 }
 
+@MainActor
 public final class RestTimerPresentationAdapter: RestTimerHandling {
 	private let controller: RestTimerController
 	private let configurationProvider: (UUID) -> RestTimerConfiguration?
@@ -13,25 +15,33 @@ public final class RestTimerPresentationAdapter: RestTimerHandling {
 	public init(controller: RestTimerController, configurationProvider: @escaping (UUID) -> RestTimerConfiguration?) {
 		self.controller = controller
 		self.configurationProvider = configurationProvider
-		self.controller.observe { [weak self] state in
-			self?.presenter?.didUpdate(state: state)
+		Task { [weak self] in
+			await controller.observe { [weak self] state in
+				await MainActor.run {
+					self?.presenter?.didUpdate(state: state)
+				}
+			}
 		}
 	}
 	
-	public func toggle(for exerciseID: UUID) {
-		controller.toggle(for: exerciseID)
+	public func toggle(for exerciseID: UUID) async {
+		await controller.toggle(for: exerciseID)
 	}
 	
-	public func enable(for exerciseID: UUID) {
+	public func enable(for exerciseID: UUID) async {
 		guard let configuration = configurationProvider(exerciseID) else { return }
-		controller.enable(for: configuration)
+		await controller.enable(for: configuration)
 	}
 	
-	public func disable(for exerciseID: UUID) {
-		controller.disable(exerciseID: exerciseID)
+	public func disable(for exerciseID: UUID) async {
+		await controller.disable(exerciseID: exerciseID)
 	}
 	
-	public func handleSetCompletion(for exerciseID: UUID) {
-		controller.startIfEnabled(afterSetFor: exerciseID)
+	public func handleSetCompletion(for exerciseID: UUID) async {
+		await controller.startIfEnabled(afterSetFor: exerciseID)
+	}
+	
+	public func cancelTimer(for exerciseID: UUID) async {
+		await controller.cancel(exerciseID: exerciseID)
 	}
 }
