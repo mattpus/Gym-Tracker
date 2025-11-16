@@ -1,0 +1,38 @@
+{
+  "configurations" : [
+    {
+      "id" : "E0D28FCA-B3D0-4204-BAF7-393ED2C59A35",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "WorkoutsDataTests",
+        "name" : "WorkoutsDataTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "WorkoutsDomainTests",
+        "name" : "WorkoutsDomainTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "WorkoutsPresentationTests",
+        "name" : "WorkoutsPresentationTests"
+      }
+    }
+  ],
+  "version" : 1
+}
