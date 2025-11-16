@@ -11,3 +11,11 @@ public protocol WorkoutsLoadingView {
 public protocol WorkoutsErrorView {
 	func display(_ viewModel: WorkoutsErrorViewModel)
 }
+
+public protocol WorkoutCommandView {
+	func display(_ viewModel: WorkoutCommandResultViewModel)
+}
+
+public protocol WorkoutCommandLoadingView {
+	func display(_ viewModel: WorkoutCommandLoadingViewModel)
+}

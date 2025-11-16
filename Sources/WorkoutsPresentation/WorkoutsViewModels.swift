@@ -24,3 +24,19 @@ public struct WorkoutsErrorViewModel: Equatable {
 		self.message = message
 	}
 }
+
+public struct WorkoutCommandResultViewModel: Equatable {
+	public let message: String
+	
+	public init(message: String) {
+		self.message = message
+	}
+}
+
+public struct WorkoutCommandLoadingViewModel: Equatable {
+	public let isLoading: Bool
+	
+	public init(isLoading: Bool) {
+		self.isLoading = isLoading
+	}
+}
