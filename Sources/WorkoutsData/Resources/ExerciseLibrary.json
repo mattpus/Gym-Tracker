@@ -1,0 +1,17 @@
+[
+	{
+		"id": "d5cf9a64-3048-4c52-b823-e2a03c7e7681",
+		"name": "Bench Press",
+		"primaryMuscle": "Chest"
+	},
+	{
+		"id": "f6a5542c-1d5e-4f07-8389-4b9d8578c4e6",
+		"name": "Deadlift",
+		"primaryMuscle": "Back"
+	},
+	{
+		"id": "c32c0aad-d18f-4b9b-84c1-788f7c4340f3",
+		"name": "Squat",
+		"primaryMuscle": "Legs"
+	}
+]

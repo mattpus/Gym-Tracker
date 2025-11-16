@@ -3,10 +3,12 @@ import WorkoutsDomain
 
 public final class FinishWorkoutPresentationAdapter {
 	private let finisher: WorkoutFinishing
+	private let saveRoutineHandler: ((Workout, String?) -> Void)?
 	public var presenter: FinishWorkoutPresenter?
 	
-	public init(finisher: WorkoutFinishing) {
+	public init(finisher: WorkoutFinishing, saveRoutineHandler: ((Workout, String?) -> Void)? = nil) {
 		self.finisher = finisher
+		self.saveRoutineHandler = saveRoutineHandler
 	}
 	
 	public func finishWorkout(id: UUID, endDate: Date) {
@@ -24,6 +26,10 @@ public final class FinishWorkoutPresentationAdapter {
 	
 	public func requestDiscardConfirmation() {
 		presenter?.requestDiscardConfirmation()
+	}
+	
+	public func saveWorkoutAsRoutine(workout: Workout, name: String?) {
+		saveRoutineHandler?(workout, name)
 	}
 	
 	public func discardWorkout(id: UUID) {

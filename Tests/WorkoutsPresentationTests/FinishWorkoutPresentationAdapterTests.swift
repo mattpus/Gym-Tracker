@@ -54,6 +54,20 @@ final class FinishWorkoutPresentationAdapterTests: XCTestCase {
 		XCTAssertEqual(view.discards.last, .init(shouldShowConfirmation: false, didDiscard: true))
 	}
 	
+	func test_saveWorkoutAsRoutine_invokesHandler() {
+		let finisher = WorkoutFinisherSpy()
+		var received: (Workout, String?)?
+		let sut = FinishWorkoutPresentationAdapter(finisher: finisher, saveRoutineHandler: { workout, name in
+			received = (workout, name)
+		})
+		let workout = Workout(date: Date(), name: "Push", exercises: [])
+		
+		sut.saveWorkoutAsRoutine(workout: workout, name: "Template")
+		
+		XCTAssertEqual(received?.0.name, "Push")
+		XCTAssertEqual(received?.1, "Template")
+	}
+	
 	// MARK: - Helpers
 	
 	private func anyError() -> NSError {

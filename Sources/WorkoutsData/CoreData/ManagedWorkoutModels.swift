@@ -54,6 +54,7 @@ extension ManagedWorkoutCache {
 	var localWorkouts: [LocalWorkout] {
 		workouts.compactMap { ($0 as? ManagedWorkout)?.local }
 	}
+	
 }
 
 extension ManagedWorkout {

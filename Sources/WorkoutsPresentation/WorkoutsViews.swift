@@ -47,3 +47,31 @@ public protocol FinishWorkoutErrorView {
 public protocol FinishWorkoutDiscardView {
 	func display(_ viewModel: FinishWorkoutDiscardViewModel)
 }
+
+public protocol RoutinesView {
+	func display(_ viewModel: RoutinesViewModel)
+}
+
+public protocol RoutinesLoadingView {
+	func display(_ viewModel: RoutinesLoadingViewModel)
+}
+
+public protocol RoutinesErrorView {
+	func display(_ viewModel: RoutinesErrorViewModel)
+}
+
+public protocol RoutineBuilderView {
+	func display(_ viewModel: RoutineBuilderViewModel)
+}
+
+public protocol RoutineBuilderLoadingView {
+	func display(_ viewModel: WorkoutCommandLoadingViewModel)
+}
+
+public protocol RoutineBuilderErrorView {
+	func display(_ viewModel: WorkoutsErrorViewModel)
+}
+
+public protocol RoutineSearchResultsView {
+	func display(_ viewModel: RoutineSearchResultsViewModel)
+}
