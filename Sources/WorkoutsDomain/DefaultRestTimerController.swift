@@ -1,6 +1,6 @@
 import Foundation
 
-public final class DefaultRestTimerController: RestTimerController {
+public final class DefaultRestTimerController: RestTimerController, @unchecked Sendable {
 	private struct ActiveTimer {
 		var configuration: RestTimerConfiguration
 		var remaining: TimeInterval
@@ -36,7 +36,7 @@ public final class DefaultRestTimerController: RestTimerController {
 	
 	public func disable(exerciseID: UUID) {
 		queue.sync(execute: {
-			guard var timer = timers[exerciseID] else { return }
+			guard let timer = timers[exerciseID] else { return }
 			timer.scheduler?.cancel()
 			timers[exerciseID] = nil
 			
@@ -122,7 +122,7 @@ public final class DefaultRestTimerController: RestTimerController {
 }
 
 public protocol RestTimerScheduler {
-	func start(_ tick: @escaping () -> Void)
+	func start(_ tick: @escaping @Sendable () -> Void)
 	func cancel()
 }
 
@@ -134,7 +134,7 @@ private final class DispatchRestTimerScheduler: RestTimerScheduler {
 		self.queue = queue
 	}
 	
-	func start(_ tick: @escaping () -> Void) {
+	func start(_ tick: @escaping @Sendable () -> Void) {
 		timer?.cancel()
 		let source = DispatchSource.makeTimerSource(queue: queue)
 		source.schedule(deadline: .now(), repeating: 1)

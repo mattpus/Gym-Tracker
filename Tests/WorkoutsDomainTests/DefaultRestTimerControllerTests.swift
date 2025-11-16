@@ -109,14 +109,14 @@ final class DefaultRestTimerControllerTests: XCTestCase {
 	
 	private final class RestTimerSchedulerSpy: RestTimerScheduler {
 		private let queue: DispatchQueue
-		private var tick: (() -> Void)?
+		private var tick: (@Sendable () -> Void)?
 		private(set) var cancelCallCount = 0
 		
 		init(queue: DispatchQueue) {
 			self.queue = queue
 		}
 		
-		func start(_ tick: @escaping () -> Void) {
+		func start(_ tick: @escaping @Sendable () -> Void) {
 			self.tick = tick
 		}
 		

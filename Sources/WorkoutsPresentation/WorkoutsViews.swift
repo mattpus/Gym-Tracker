@@ -31,3 +31,19 @@ public protocol RestTimerView {
 public protocol RestTimerAlertView {
 	func display(_ viewModel: RestTimerAlertViewModel)
 }
+
+public protocol FinishWorkoutSummaryView {
+	func display(_ viewModel: FinishWorkoutSummaryViewModel)
+}
+
+public protocol FinishWorkoutLoadingView {
+	func display(_ viewModel: FinishWorkoutLoadingViewModel)
+}
+
+public protocol FinishWorkoutErrorView {
+	func display(_ viewModel: FinishWorkoutErrorViewModel)
+}
+
+public protocol FinishWorkoutDiscardView {
+	func display(_ viewModel: FinishWorkoutDiscardViewModel)
+}

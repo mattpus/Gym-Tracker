@@ -109,3 +109,21 @@ This document orients new LLM engineers to the GymTracker package so everyone fo
 5. Track memory leaks for every SUT.
 
 By adhering to these guidelines, we keep the GymTracker package consistent with the engineering rigor shown in the Essential Feed case study—testable, modular, and ready for future UI/platform layers.
+
+---
+
+## 6. Essential Feed Learnings Applied
+
+1. **Use Case Composition** – like Essential Feed’s feed/cache loaders, every GymTracker feature is a use case that depends only on protocols. This makes swap-in data sources easy and encourages SOLID boundaries.
+2. **Test Doubles & Specs** – Each repository/controller has a spy mirroring the FeedStore specs approach. Reuse message enums and helper assertions to keep tests declarative.
+3. **Memory Leak Checks** – Adopt EF’s `trackForMemoryLeaks` helper in every test to guard retain cycles.
+4. **Composable Presentation** – Presenters stay logic-only and talk to view protocols, just as the Essential Feed presenters output view models for multiple platforms.
+5. **Integration Testing Mindset** – Important flows (e.g., Core Data + repository) should get integration suites similar to `EssentialFeedCacheIntegrationTests` whenever we add new infra or IO.
+
+---
+
+## 7. Rest Timer Subsystem Notes
+
+- `DefaultRestTimerController` uses injected `RestTimerScheduler` instances. Production code uses the provided `DispatchRestTimerScheduler`; tests should pass spies to deterministically fire ticks.
+- `RestTimerPresentationAdapter` implements `RestTimerHandling` so other adapters (e.g., exercise-set logging) can trigger auto-start after a set completes. Always inject a configuration provider that returns the user’s desired rest duration per exercise.
+- UI layer should conform to both `RestTimerView` (to show remaining time) and `RestTimerAlertView` (to play sound/haptics). Current alert view model simply signals when to play/stop alerts—hook actual sound/vibration inside the app target.
