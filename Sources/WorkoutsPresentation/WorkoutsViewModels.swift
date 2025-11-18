@@ -47,25 +47,69 @@ public struct ExerciseSetLoggingViewModel: Equatable {
 		case updated
 		case deleted
 	}
-	
+
 	public let workout: Workout
 	public let exercise: Exercise
 	public let set: ExerciseSet?
 	public let previousSet: ExerciseSet?
 	public let action: Action
-	
+	public let previousDisplay: String
+
 	public init(
 		workout: Workout,
 		exercise: Exercise,
 		set: ExerciseSet?,
 		previousSet: ExerciseSet?,
-		action: Action
+		action: Action,
+		previousDisplay: String
 	) {
 		self.workout = workout
 		self.exercise = exercise
 		self.set = set
 		self.previousSet = previousSet
 		self.action = action
+		self.previousDisplay = previousDisplay
+	}
+}
+
+public struct ExerciseNotesViewModel: Equatable {
+	public let exerciseID: UUID
+	public let notes: String
+	public let placeholder: String
+
+	public init(exerciseID: UUID, notes: String, placeholder: String) {
+		self.exerciseID = exerciseID
+		self.notes = notes
+		self.placeholder = placeholder
+	}
+}
+
+public struct ExerciseActionMenuViewModel: Equatable {
+	public let exerciseID: UUID
+	public let items: [ExerciseActionMenuItemViewModel]
+
+	public init(exerciseID: UUID, items: [ExerciseActionMenuItemViewModel]) {
+		self.exerciseID = exerciseID
+		self.items = items
+	}
+}
+
+public struct ExerciseActionMenuItemViewModel: Equatable {
+	public enum Action: Equatable {
+		case reorder
+		case replace
+		case removeFromSuperset
+		case removeExercise
+	}
+
+	public let action: Action
+	public let title: String
+	public let isEnabled: Bool
+
+	public init(action: Action, title: String, isEnabled: Bool) {
+		self.action = action
+		self.title = title
+		self.isEnabled = isEnabled
 	}
 }
 
@@ -165,5 +209,13 @@ public struct StartEmptyWorkoutPromptViewModel: Equatable {
 	public init(title: String, placeholder: String) {
 		self.title = title
 		self.placeholder = placeholder
+	}
+}
+
+public struct WorkoutDurationViewModel: Equatable {
+	public let formattedTime: String
+
+	public init(formattedTime: String) {
+		self.formattedTime = formattedTime
 	}
 }

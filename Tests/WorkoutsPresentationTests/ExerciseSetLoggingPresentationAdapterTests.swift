@@ -29,12 +29,20 @@ final class ExerciseSetLoggingPresentationAdapterTests: XCTestCase {
 		wait(for: [exp], timeout: 1.0)
 		
 		XCTAssertEqual(useCase.addMessages.count, 1)
-		XCTAssertEqual(view.events, [
-			.error(nil),
-			.loading(true),
-			.logging(result.workout, result.exercise, result.set, result.previousSet, .added),
-			.loading(false)
-		])
+		XCTAssertEqual(view.events.count, 4)
+		XCTAssertEqual(view.events[0], .error(nil))
+		XCTAssertEqual(view.events[1], .loading(true))
+		if case let .logging(workout, exercise, set, previous, action, previousDisplay) = view.events[2] {
+			XCTAssertEqual(workout, result.workout)
+			XCTAssertEqual(exercise, result.exercise)
+			XCTAssertEqual(set, result.set)
+			XCTAssertEqual(previous, result.previousSet)
+			XCTAssertEqual(action, .added)
+			XCTAssertEqual(previousDisplay, "-")
+		} else {
+			XCTFail("Expected logging event")
+		}
+		XCTAssertEqual(view.events[3], .loading(false))
 		XCTAssertEqual(restTimer.handledExerciseIDs, [exerciseID])
 	}
 	
@@ -58,10 +66,18 @@ final class ExerciseSetLoggingPresentationAdapterTests: XCTestCase {
 		sut.deleteSet(in: UUID(), exerciseID: UUID(), setID: UUID())
 		useCase.completeDelete(with: .success(deletion))
 		
-		XCTAssertEqual(view.events.suffix(2), [
-			.logging(deletion.workout, deletion.exercise, nil, nil, .deleted),
-			.loading(false)
-		])
+		let suffix = view.events.suffix(2)
+		if case let .logging(workout, exercise, set, previous, action, previousDisplay) = suffix.first {
+			XCTAssertEqual(workout, deletion.workout)
+			XCTAssertEqual(exercise, deletion.exercise)
+			XCTAssertNil(set)
+			XCTAssertNil(previous)
+			XCTAssertEqual(action, .deleted)
+			XCTAssertEqual(previousDisplay, "-")
+		} else {
+			XCTFail("Expected logging event")
+		}
+		XCTAssertEqual(suffix.last, .loading(false))
 	}
 	
 	// MARK: - Helpers
@@ -121,15 +137,15 @@ final class ExerciseSetLoggingPresentationAdapterTests: XCTestCase {
 	
 	private final class ViewSpy: ExerciseSetLoggingView, WorkoutCommandLoadingView, WorkoutsErrorView {
 		enum Event: Equatable {
-			case logging(Workout, Exercise, ExerciseSet?, ExerciseSet?, ExerciseSetLoggingViewModel.Action)
+			case logging(Workout, Exercise, ExerciseSet?, ExerciseSet?, ExerciseSetLoggingViewModel.Action, String)
 			case loading(Bool)
 			case error(String?)
 		}
-		
+
 		private(set) var events = [Event]()
-		
+
 		func display(_ viewModel: ExerciseSetLoggingViewModel) {
-			events.append(.logging(viewModel.workout, viewModel.exercise, viewModel.set, viewModel.previousSet, viewModel.action))
+			events.append(.logging(viewModel.workout, viewModel.exercise, viewModel.set, viewModel.previousSet, viewModel.action, viewModel.previousDisplay))
 		}
 		
 		func display(_ viewModel: WorkoutCommandLoadingViewModel) {

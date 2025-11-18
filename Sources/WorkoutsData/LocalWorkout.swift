@@ -22,12 +22,16 @@ public struct LocalExercise: Equatable, Codable {
 	public let name: String
 	public let notes: String?
 	public let sets: [LocalExerciseSet]
+	public let supersetID: UUID?
+	public let supersetOrder: Int?
 	
-	public init(id: UUID, name: String, notes: String?, sets: [LocalExerciseSet]) {
+	public init(id: UUID, name: String, notes: String?, sets: [LocalExerciseSet], supersetID: UUID?, supersetOrder: Int?) {
 		self.id = id
 		self.name = name
 		self.notes = notes
 		self.sets = sets
+		self.supersetID = supersetID
+		self.supersetOrder = supersetOrder
 	}
 }
 
@@ -74,7 +78,9 @@ extension Array where Element == Workout {
 								weight: set.weight,
 								duration: set.duration
 							)
-						}
+						},
+						supersetID: exercise.supersetID,
+						supersetOrder: exercise.supersetOrder
 					)
 				}
 			)
@@ -103,7 +109,9 @@ extension Array where Element == LocalWorkout {
 								weight: set.weight,
 								duration: set.duration
 							)
-						}
+						},
+						supersetID: exercise.supersetID,
+						supersetOrder: exercise.supersetOrder
 					)
 				}
 			)

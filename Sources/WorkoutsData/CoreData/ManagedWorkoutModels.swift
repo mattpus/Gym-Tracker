@@ -23,6 +23,8 @@ class ManagedExercise: NSManagedObject {
 	@NSManaged var notes: String?
 	@NSManaged var sets: NSOrderedSet
 	@NSManaged var workout: ManagedWorkout
+	@NSManaged var supersetID: UUID?
+	@NSManaged var supersetOrder: NSNumber?
 }
 
 @objc(ManagedExerciseSet)
@@ -90,6 +92,8 @@ extension ManagedExercise {
 			managedExercise.id = exercise.id
 			managedExercise.name = exercise.name
 			managedExercise.notes = exercise.notes
+			managedExercise.supersetID = exercise.supersetID
+			managedExercise.supersetOrder = exercise.supersetOrder.map { NSNumber(value: $0) }
 			managedExercise.sets = ManagedExerciseSet.sets(from: exercise.sets, in: context)
 			return managedExercise
 		}
@@ -102,7 +106,9 @@ extension ManagedExercise {
 			id: id,
 			name: name,
 			notes: notes,
-			sets: sets.compactMap { ($0 as? ManagedExerciseSet)?.local }
+			sets: sets.compactMap { ($0 as? ManagedExerciseSet)?.local },
+			supersetID: supersetID,
+			supersetOrder: supersetOrder?.intValue
 		)
 	}
 }

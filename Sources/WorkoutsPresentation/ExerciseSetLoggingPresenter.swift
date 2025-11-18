@@ -27,7 +27,8 @@ public final class ExerciseSetLoggingPresenter {
 			exercise: result.exercise,
 			set: result.set,
 			previousSet: result.previousSet,
-			action: action
+			action: action,
+			previousDisplay: formattedPreviousSet(result.previousSet)
 		)
 		loggingView.display(viewModel)
 		loadingView.display(.init(isLoading: false))
@@ -39,7 +40,8 @@ public final class ExerciseSetLoggingPresenter {
 			exercise: result.exercise,
 			set: nil,
 			previousSet: nil,
-			action: .deleted
+			action: .deleted,
+			previousDisplay: formattedPreviousSet(nil)
 		)
 		loggingView.display(viewModel)
 		loadingView.display(.init(isLoading: false))
@@ -52,5 +54,34 @@ public final class ExerciseSetLoggingPresenter {
 	
 	private func localized(_ error: Swift.Error) -> String {
 		"Something went wrong. Please try again."
+	}
+
+	private func formattedPreviousSet(_ set: ExerciseSet?) -> String {
+		guard let set else { return "-" }
+		var components = [String]()
+		if let weight = set.weight {
+			let text: String
+			if weight.rounded() == weight {
+				text = "\(Int(weight))kg"
+			} else {
+				text = "\(weight)kg"
+			}
+			components.append(text)
+		}
+		if let reps = set.repetitions {
+			let repsText = components.isEmpty ? "\(reps) reps" : "\(reps)"
+			if components.isEmpty {
+				components.append(repsText)
+			} else {
+				components.append(repsText)
+			}
+		}
+		if components.isEmpty {
+			return "-"
+		}
+		if components.count == 2, components[0].contains("kg"), !components[1].contains("reps") {
+			return "\(components[0]) × \(components[1])"
+		}
+		return components.joined(separator: " ")
 	}
 }

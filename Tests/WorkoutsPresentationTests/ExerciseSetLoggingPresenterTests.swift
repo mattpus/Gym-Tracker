@@ -27,10 +27,18 @@ final class ExerciseSetLoggingPresenterTests: XCTestCase {
 		
 		sut.didFinishLogging(with: result, action: .added)
 		
-		XCTAssertEqual(view.events, [
-			.logging(result.workout, result.exercise, result.set, result.previousSet, .added),
-			.loading(false)
-		])
+		XCTAssertEqual(view.events.count, 2)
+		if case let .logging(workout, exercise, set, previous, action, previousDisplay) = view.events.first {
+			XCTAssertEqual(workout, result.workout)
+			XCTAssertEqual(exercise, result.exercise)
+			XCTAssertEqual(set, result.set)
+			XCTAssertEqual(previous, result.previousSet)
+			XCTAssertEqual(action, .added)
+			XCTAssertEqual(previousDisplay, "95kg × 8")
+		} else {
+			XCTFail("Expected logging event")
+		}
+		XCTAssertEqual(view.events.last, .loading(false))
 	}
 	
 	func test_didFinishDeleting_displaysDeletion() {
@@ -39,10 +47,18 @@ final class ExerciseSetLoggingPresenterTests: XCTestCase {
 		
 		sut.didFinishDeleting(with: deletion)
 		
-		XCTAssertEqual(view.events, [
-			.logging(deletion.workout, deletion.exercise, nil, nil, .deleted),
-			.loading(false)
-		])
+		XCTAssertEqual(view.events.count, 2)
+		if case let .logging(workout, exercise, set, previous, action, previousDisplay) = view.events.first {
+			XCTAssertEqual(workout, deletion.workout)
+			XCTAssertEqual(exercise, deletion.exercise)
+			XCTAssertNil(set)
+			XCTAssertNil(previous)
+			XCTAssertEqual(action, .deleted)
+			XCTAssertEqual(previousDisplay, "-")
+		} else {
+			XCTFail("Expected logging event")
+		}
+		XCTAssertEqual(view.events.last, .loading(false))
 	}
 	
 	func test_didFinishWithError_displaysErrorAndStopsLoading() {
@@ -72,12 +88,12 @@ final class ExerciseSetLoggingPresenterTests: XCTestCase {
 	}
 	
 	private func makeExercise() -> Exercise {
-		Exercise(name: "Bench", sets: [])
+		Exercise(name: "Bench", notes: nil, sets: [])
 	}
 	
 	private final class ViewSpy: ExerciseSetLoggingView, WorkoutCommandLoadingView, WorkoutsErrorView {
 		enum Event: Equatable {
-			case logging(Workout, Exercise, ExerciseSet?, ExerciseSet?, ExerciseSetLoggingViewModel.Action)
+			case logging(Workout, Exercise, ExerciseSet?, ExerciseSet?, ExerciseSetLoggingViewModel.Action, String)
 			case loading(Bool)
 			case error(String?)
 		}
@@ -85,7 +101,7 @@ final class ExerciseSetLoggingPresenterTests: XCTestCase {
 		private(set) var events = [Event]()
 		
 		func display(_ viewModel: ExerciseSetLoggingViewModel) {
-			events.append(.logging(viewModel.workout, viewModel.exercise, viewModel.set, viewModel.previousSet, viewModel.action))
+			events.append(.logging(viewModel.workout, viewModel.exercise, viewModel.set, viewModel.previousSet, viewModel.action, viewModel.previousDisplay))
 		}
 		
 		func display(_ viewModel: WorkoutCommandLoadingViewModel) {

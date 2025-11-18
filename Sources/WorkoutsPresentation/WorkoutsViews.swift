@@ -24,6 +24,14 @@ public protocol ExerciseSetLoggingView {
 	func display(_ viewModel: ExerciseSetLoggingViewModel)
 }
 
+public protocol ExerciseNotesView {
+	func display(_ viewModel: ExerciseNotesViewModel)
+}
+
+public protocol ExerciseActionMenuView {
+	func display(_ viewModel: ExerciseActionMenuViewModel)
+}
+
 public protocol RestTimerView {
 	func display(_ viewModel: RestTimerViewModel)
 }
