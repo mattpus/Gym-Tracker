@@ -7,7 +7,7 @@ final class ExerciseSetLoggingUseCaseTests: XCTestCase {
 	func test_addSet_requestsLoadAndSave() {
 		let workout = makeWorkout()
 		let exerciseID = workout.exercises[0].id
-		let (sut, repository) = makeSUT()
+		let (sut, repository, _) = makeSUT()
 		repository.loadResult = .success([workout])
 		
 		sut.addSet(to: workout.id, exerciseID: exerciseID, request: makeRequest()) { _ in }
@@ -23,7 +23,7 @@ final class ExerciseSetLoggingUseCaseTests: XCTestCase {
 				ExerciseSet(order: 0, repetitions: 8, weight: 100, duration: nil)
 			])
 		])
-		let (sut, repository) = makeSUT()
+		let (sut, repository, _) = makeSUT()
 		repository.loadResult = .success([workout])
 		let request = ExerciseSetRequest(repetitions: 10, weight: 105, duration: nil)
 		
@@ -37,36 +37,67 @@ final class ExerciseSetLoggingUseCaseTests: XCTestCase {
 		XCTAssertEqual(receivedResult?.exercise.sets.count, 2)
 	}
 	
-	func test_addSet_returnsPreviousSetFromEarlierWorkout() {
+	func test_addSet_deliversPreviousSetFromHistoryProvider() {
 		let exerciseID = UUID()
 		let previousSet = ExerciseSet(order: 0, repetitions: 5, weight: 50, duration: nil)
-		let previousWorkout = Workout(
-			date: Date().addingTimeInterval(-3600),
-			name: "Prev",
-			exercises: [
-				Exercise(id: exerciseID, name: "Bench", sets: [previousSet])
-			]
-		)
-		let currentWorkout = Workout(
-			date: Date(),
-			name: "Today",
-			exercises: [
-				Exercise(id: exerciseID, name: "Bench", sets: [])
-			]
-		)
-		let (sut, repository) = makeSUT()
-		repository.loadResult = .success([previousWorkout, currentWorkout])
+		let workout = makeWorkout(exercises: [
+			Exercise(id: exerciseID, name: "Bench", sets: [])
+		])
+		let (sut, repository, history) = makeSUT()
+		repository.loadResult = .success([workout])
+		history.result = .success(previousSet)
 		
 		var receivedResult: ExerciseSetLogResult?
-		sut.addSet(to: currentWorkout.id, exerciseID: exerciseID, request: makeRequest()) { result in
+		sut.addSet(to: workout.id, exerciseID: exerciseID, request: makeRequest()) { result in
 			receivedResult = try? result.get()
 		}
 		
 		XCTAssertEqual(receivedResult?.previousSet, previousSet)
 	}
+
+	func test_addSet_requestsHistoryForExerciseBeforeWorkoutDate() {
+		let exercise = Exercise(id: UUID(), name: "Bench", sets: [])
+		let workout = makeWorkout(exercises: [exercise])
+		let (sut, repository, history) = makeSUT()
+		repository.loadResult = .success([workout])
+
+		sut.addSet(to: workout.id, exerciseID: exercise.id, request: makeRequest()) { _ in }
+
+		XCTAssertEqual(history.messages, [.previous(exercise.id, workout.date)])
+	}
+
+	func test_updateSet_requestsHistoryForExerciseBeforeWorkoutDate() {
+		let set = ExerciseSet(id: UUID(), order: 0, repetitions: 5, weight: 50, duration: nil)
+		let exercise = Exercise(id: UUID(), name: "Bench", sets: [set])
+		let workout = makeWorkout(exercises: [exercise])
+		let (sut, repository, history) = makeSUT()
+		repository.loadResult = .success([workout])
+
+		sut.updateSet(in: workout.id, exerciseID: exercise.id, setID: set.id, request: makeRequest()) { _ in }
+
+		XCTAssertEqual(history.messages, [.previous(exercise.id, workout.date)])
+	}
+
+	func test_addSet_deliversErrorWhenHistoryProviderFails() {
+		let exercise = Exercise(id: UUID(), name: "Bench", sets: [])
+		let workout = makeWorkout(exercises: [exercise])
+		let (sut, repository, history) = makeSUT()
+		repository.loadResult = .success([workout])
+		let error = anyError()
+		history.result = .failure(error)
+
+		var receivedError: Error?
+		sut.addSet(to: workout.id, exerciseID: exercise.id, request: makeRequest()) { result in
+			if case let .failure(error) = result {
+				receivedError = error
+			}
+		}
+
+		XCTAssertEqual(receivedError as NSError?, error)
+	}
 	
 	func test_addSet_throwsWhenWorkoutNotFound() {
-		let (sut, repository) = makeSUT()
+		let (sut, repository, _) = makeSUT()
 		repository.loadResult = .success([])
 		
 		var receivedError: Error?
@@ -81,7 +112,7 @@ final class ExerciseSetLoggingUseCaseTests: XCTestCase {
 	
 	func test_updateSet_throwsWhenSetMissing() {
 		let workout = makeWorkout(exercises: [Exercise(name: "Bench", sets: [])])
-		let (sut, repository) = makeSUT()
+		let (sut, repository, _) = makeSUT()
 		repository.loadResult = .success([workout])
 		
 		var receivedError: Error?
@@ -96,7 +127,7 @@ final class ExerciseSetLoggingUseCaseTests: XCTestCase {
 	
 	func test_deleteSet_throwsWhenSetMissing() {
 		let workout = makeWorkout(exercises: [Exercise(name: "Bench", sets: [])])
-		let (sut, repository) = makeSUT()
+		let (sut, repository, _) = makeSUT()
 		repository.loadResult = .success([workout])
 		
 		var receivedError: Error?
@@ -113,7 +144,7 @@ final class ExerciseSetLoggingUseCaseTests: XCTestCase {
 		let set = ExerciseSet(id: UUID(), order: 0, repetitions: 5, weight: 50, duration: nil)
 		let exercise = Exercise(name: "Bench", sets: [set])
 		let workout = makeWorkout(exercises: [exercise])
-		let (sut, repository) = makeSUT()
+		let (sut, repository, _) = makeSUT()
 		repository.loadResult = .success([workout])
 		
 		var receivedResult: ExerciseSetLogResult?
@@ -131,7 +162,7 @@ final class ExerciseSetLoggingUseCaseTests: XCTestCase {
 		let set2 = ExerciseSet(id: UUID(), order: 1, repetitions: 6, weight: 55, duration: nil)
 		let exercise = Exercise(name: "Bench", sets: [set1, set2])
 		let workout = makeWorkout(exercises: [exercise])
-		let (sut, repository) = makeSUT()
+		let (sut, repository, _) = makeSUT()
 		repository.loadResult = .success([workout])
 		
 		var receivedResult: ExerciseSetDeletionResult?
@@ -149,12 +180,14 @@ final class ExerciseSetLoggingUseCaseTests: XCTestCase {
 	private func makeSUT(
 		file: StaticString = #filePath,
 		line: UInt = #line
-	) -> (sut: ExerciseSetLoggingUseCase, repository: WorkoutRepositorySpy) {
+	) -> (sut: ExerciseSetLoggingUseCase, repository: WorkoutRepositorySpy, history: ExerciseHistoryProviderSpy) {
 		let repository = WorkoutRepositorySpy()
-		let sut = ExerciseSetLoggingUseCase(repository: repository)
+		let history = ExerciseHistoryProviderSpy()
+		let sut = ExerciseSetLoggingUseCase(repository: repository, historyProvider: history)
 		trackForMemoryLeaks(repository, file: file, line: line)
+		trackForMemoryLeaks(history, file: file, line: line)
 		trackForMemoryLeaks(sut, file: file, line: line)
-		return (sut, repository)
+		return (sut, repository, history)
 	}
 	
 	private func makeRequest() -> ExerciseSetRequest {
@@ -169,5 +202,23 @@ final class ExerciseSetLoggingUseCaseTests: XCTestCase {
 		exercises: [Exercise] = [Exercise(name: "Bench", sets: [])]
 	) -> Workout {
 		Workout(id: id, date: date, name: name, notes: notes, exercises: exercises)
+	}
+
+	private func anyError() -> NSError {
+		NSError(domain: "test", code: 0)
+	}
+}
+
+private final class ExerciseHistoryProviderSpy: ExerciseHistoryProviding {
+	enum Message: Equatable {
+		case previous(UUID, Date)
+	}
+
+	private(set) var messages = [Message]()
+	var result: Result<ExerciseSet?, Swift.Error> = .success(nil)
+
+	func previousSet(for exerciseID: UUID, before date: Date) throws -> ExerciseSet? {
+		messages.append(.previous(exerciseID, date))
+		return try result.get()
 	}
 }

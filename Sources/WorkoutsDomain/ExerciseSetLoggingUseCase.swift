@@ -8,9 +8,11 @@ public final class ExerciseSetLoggingUseCase: ExerciseSetLogging {
 	}
 	
 	private let repository: WorkoutRepository
+	private let historyProvider: ExerciseHistoryProviding
 	
-	public init(repository: WorkoutRepository) {
+	public init(repository: WorkoutRepository, historyProvider: ExerciseHistoryProviding) {
 		self.repository = repository
+		self.historyProvider = historyProvider
 	}
 	
 	public func addSet(to workoutID: UUID, exerciseID: UUID, request: ExerciseSetRequest, completion: @escaping LogCompletion) {
@@ -34,7 +36,7 @@ public final class ExerciseSetLoggingUseCase: ExerciseSetLogging {
 			
 			try self.repository.save(workouts)
 			
-			let previous = self.previousSet(for: exercise.id, before: workout.date, in: workouts)
+			let previous = try self.historyProvider.previousSet(for: exercise.id, before: workout.date)
 			
 			return ExerciseSetLogResult(workout: updatedWorkout, exercise: updatedExercise, set: newSet, previousSet: previous)
 		})
@@ -68,7 +70,7 @@ public final class ExerciseSetLoggingUseCase: ExerciseSetLogging {
 			
 			try self.repository.save(workouts)
 			
-			let previous = self.previousSet(for: exercise.id, before: workout.date, in: workouts)
+			let previous = try self.historyProvider.previousSet(for: exercise.id, before: workout.date)
 			
 			return ExerciseSetLogResult(workout: updatedWorkout, exercise: updatedExercise, set: updatedSet, previousSet: previous)
 		})
@@ -133,15 +135,5 @@ public final class ExerciseSetLoggingUseCase: ExerciseSetLogging {
 			notes: workout.notes,
 			exercises: exercises
 		)
-	}
-	
-	private func previousSet(for exerciseID: UUID, before date: Date, in workouts: [Workout]) -> ExerciseSet? {
-		return workouts
-			.filter { $0.date < date }
-			.sorted { $0.date > $1.date }
-			.compactMap { workout in
-				workout.exercises.first(where: { $0.id == exerciseID })?.sets.last
-			}
-			.first
 	}
 }

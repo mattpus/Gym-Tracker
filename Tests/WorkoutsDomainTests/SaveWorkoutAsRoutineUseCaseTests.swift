@@ -25,7 +25,9 @@ final class SaveWorkoutAsRoutineUseCaseTests: XCTestCase {
 		XCTAssertEqual(routine?.name, workout.name)
 		XCTAssertEqual(routine?.exercises.count, workout.exercises.count)
 		XCTAssertEqual(routine?.exercises.first?.sets.count, workout.exercises.first?.sets.count)
-		XCTAssertNil(routine?.exercises.first?.sets.first?.repetitions)
+		XCTAssertEqual(routine?.exercises.first?.sets.first?.repetitions, workout.exercises.first?.sets.first?.repetitions)
+		XCTAssertEqual(routine?.exercises.first?.sets.first?.weight, workout.exercises.first?.sets.first?.weight)
+		XCTAssertEqual(routine?.exercises.first?.sets.first?.duration, workout.exercises.first?.sets.first?.duration)
 	}
 	
 	func test_save_overridesNameWhenCustomNameProvided() {
@@ -69,8 +71,8 @@ final class SaveWorkoutAsRoutineUseCaseTests: XCTestCase {
 	
 	private func makeWorkout() -> Workout {
 		let sets = [
-			ExerciseSet(order: 0, repetitions: 10, weight: 135),
-			ExerciseSet(order: 1, repetitions: 8, weight: 185)
+			ExerciseSet(order: 0, repetitions: 10, weight: 135, duration: 30),
+			ExerciseSet(order: 1, repetitions: 8, weight: 185, duration: 40)
 		]
 		let exercises = [
 			Exercise(name: "Bench Press", notes: "Flat", sets: sets)

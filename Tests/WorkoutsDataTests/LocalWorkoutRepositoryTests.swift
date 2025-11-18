@@ -80,6 +80,38 @@ final class LocalWorkoutRepositoryTests: XCTestCase {
 		
 		XCTAssertThrowsError(try sut.save([]))
 	}
+
+	func test_makeExerciseSetLoggingUseCase_usesHistoryFromStore() {
+		let (repository, store) = makeSUT()
+		let exerciseID = UUID()
+		let previousSet = ExerciseSet(order: 0, repetitions: 5, weight: 50, duration: nil)
+		let previousWorkout = Workout(
+			date: Date().addingTimeInterval(-3600),
+			name: "Prev",
+			exercises: [Exercise(id: exerciseID, name: "Bench", sets: [previousSet])]
+		)
+		let currentWorkout = Workout(
+			date: Date(),
+			name: "Today",
+			exercises: [Exercise(id: exerciseID, name: "Bench", sets: [])]
+		)
+		store.retrieveResult = .success(CachedWorkouts(workouts: [previousWorkout, currentWorkout].toLocal(), timestamp: Date()))
+
+		let sut = repository.makeExerciseSetLoggingUseCase()
+		let request = ExerciseSetRequest(repetitions: 8, weight: 60, duration: nil)
+		let exp = expectation(description: "Wait for logging")
+
+		sut.addSet(to: currentWorkout.id, exerciseID: exerciseID, request: request) { result in
+			if case let .success(logResult) = result {
+				XCTAssertEqual(logResult.previousSet, previousSet)
+			} else {
+				XCTFail("Expected success, got \(result) instead")
+			}
+			exp.fulfill()
+		}
+
+		wait(for: [exp], timeout: 1.0)
+	}
 	
 	private func makeSUT(
 		currentDate: @escaping () -> Date = Date.init,

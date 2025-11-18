@@ -6,17 +6,20 @@ public final class FinishWorkoutPresenter {
 	private let loadingView: FinishWorkoutLoadingView
 	private let errorView: FinishWorkoutErrorView
 	private let discardView: FinishWorkoutDiscardView
+	private let commandView: WorkoutCommandView?
 	
 	public init(
 		summaryView: FinishWorkoutSummaryView,
 		loadingView: FinishWorkoutLoadingView,
 		errorView: FinishWorkoutErrorView,
-		discardView: FinishWorkoutDiscardView
+		discardView: FinishWorkoutDiscardView,
+		commandView: WorkoutCommandView? = nil
 	) {
 		self.summaryView = summaryView
 		self.loadingView = loadingView
 		self.errorView = errorView
 		self.discardView = discardView
+		self.commandView = commandView
 	}
 	
 	public func didStartFinishing() {
@@ -50,6 +53,14 @@ public final class FinishWorkoutPresenter {
 	public func didFailDiscarding(with error: Error) {
 		errorView.display(.init(message: localized(error)))
 		loadingView.display(.init(isLoading: false))
+	}
+
+	public func didSaveRoutine() {
+		commandView?.display(.init(message: "Workout saved as routine"))
+	}
+
+	public func didFailSavingRoutine(with error: Error) {
+		errorView.display(.init(message: localized(error)))
 	}
 	
 	private func localized(_ error: Error) -> String {

@@ -46,10 +46,13 @@ public final class SaveWorkoutAsRoutineUseCase: WorkoutRoutineSaving {
 	}
 	
 	private func makeRoutineSets(from sets: [ExerciseSet]) -> [RoutineSet] {
-		sets.enumerated().map { order, _ in
+		sets.enumerated().map { order, set in
 			RoutineSet(
 				id: uuid(),
-				order: order
+				order: order,
+				repetitions: set.repetitions,
+				weight: set.weight,
+				duration: set.duration
 			)
 		}
 	}

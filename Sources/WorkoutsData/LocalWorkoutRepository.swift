@@ -21,4 +21,9 @@ public final class LocalWorkoutRepository: WorkoutRepository {
 		try store.deleteCachedWorkouts()
 		try store.insert(workouts.toLocal(), timestamp: currentDate())
 	}
+
+	public func makeExerciseSetLoggingUseCase() -> ExerciseSetLoggingUseCase {
+		let historyProvider = LocalExerciseHistoryProvider(store: store)
+		return ExerciseSetLoggingUseCase(repository: self, historyProvider: historyProvider)
+	}
 }
