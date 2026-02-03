@@ -5,13 +5,20 @@ import PackageDescription
 let package = Package(
     name: "GymTracker",
     platforms: [
-        .iOS(.v15),
-        .macOS(.v13)
+        .iOS(.v17),
+        .macOS(.v14)
     ],
     products: [
         .library(name: "WorkoutsDomain", targets: ["WorkoutsDomain"]),
         .library(name: "WorkoutsData", targets: ["WorkoutsData"]),
-        .library(name: "WorkoutsPresentation", targets: ["WorkoutsPresentation"])
+        .library(name: "WorkoutsPresentation", targets: ["WorkoutsPresentation"]),
+        .library(name: "ExerciseLibraryDomain", targets: ["ExerciseLibraryDomain"]),
+        .library(name: "ExerciseLibraryData", targets: ["ExerciseLibraryData"]),
+        .library(name: "AnalyticsDomain", targets: ["AnalyticsDomain"]),
+        .library(name: "AnalyticsData", targets: ["AnalyticsData"]),
+        .library(name: "AnalyticsPresentation", targets: ["AnalyticsPresentation"]),
+        .library(name: "ProgressionDomain", targets: ["ProgressionDomain"]),
+        .library(name: "ProgressionData", targets: ["ProgressionData"])
     ],
     dependencies: [],
     targets: [
@@ -27,6 +34,15 @@ let package = Package(
         .target(
             name: "WorkoutsPresentation",
             dependencies: ["WorkoutsDomain"]),
+        .target(
+            name: "ExerciseLibraryDomain",
+            dependencies: []),
+        .target(
+            name: "ExerciseLibraryData",
+            dependencies: ["ExerciseLibraryDomain"],
+            resources: [
+                .process("Resources")
+            ]),
         .testTarget(
             name: "WorkoutsDomainTests",
             dependencies: ["WorkoutsDomain"]),
@@ -35,6 +51,39 @@ let package = Package(
             dependencies: ["WorkoutsData"]),
         .testTarget(
             name: "WorkoutsPresentationTests",
-            dependencies: ["WorkoutsPresentation"])
+            dependencies: ["WorkoutsPresentation"]),
+        .testTarget(
+            name: "ExerciseLibraryDomainTests",
+            dependencies: ["ExerciseLibraryDomain"]),
+        .testTarget(
+            name: "ExerciseLibraryDataTests",
+            dependencies: ["ExerciseLibraryData"]),
+        .target(
+            name: "AnalyticsDomain",
+            dependencies: []),
+        .target(
+            name: "AnalyticsData",
+            dependencies: ["AnalyticsDomain", "WorkoutsDomain", "ExerciseLibraryDomain"]),
+        .target(
+            name: "AnalyticsPresentation",
+            dependencies: ["AnalyticsDomain"]),
+        .testTarget(
+            name: "AnalyticsDomainTests",
+            dependencies: ["AnalyticsDomain"]),
+        .testTarget(
+            name: "AnalyticsDataTests",
+            dependencies: ["AnalyticsData", "WorkoutsDomain"]),
+        .target(
+            name: "ProgressionDomain",
+            dependencies: []),
+        .target(
+            name: "ProgressionData",
+            dependencies: ["ProgressionDomain", "WorkoutsDomain"]),
+        .testTarget(
+            name: "ProgressionDomainTests",
+            dependencies: ["ProgressionDomain"]),
+        .testTarget(
+            name: "ProgressionDataTests",
+            dependencies: ["ProgressionData", "WorkoutsDomain"])
     ]
 )
