@@ -54,17 +54,6 @@ struct ActiveWorkoutView: View {
             } message: {
                 Text("Your workout progress will be lost.")
             }
-            .sheet(isPresented: $coordinator.showingExerciseSelection) {
-                if let exerciseViewModel = coordinator.exerciseSelectionViewModel {
-                    ExerciseSelectionView(
-                        viewModel: exerciseViewModel,
-                        onExerciseSelected: { exercise in
-                            viewModel.addExercise(exercise)
-                            coordinator.dismissExerciseSelection()
-                        }
-                    )
-                }
-            }
         }
     }
     

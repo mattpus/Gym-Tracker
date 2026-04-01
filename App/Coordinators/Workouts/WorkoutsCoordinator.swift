@@ -6,12 +6,9 @@ import WorkoutsDomain
 @MainActor
 final class WorkoutsCoordinator: Coordinator {
     var childCoordinators: [any Coordinator] = []
-    var navigationPath = NavigationPath()
-    
-    // Sheet presentation states
-    var showingRoutineSelection = false
-    var showingExerciseSelection = false
-    var showingActiveWorkout = false
+    var path: [WorkoutsRoute] = []
+    var sheet: WorkoutsSheet?
+    var cover: WorkoutsCover?
     
     private let container: DependencyContainer
     
@@ -34,13 +31,36 @@ final class WorkoutsCoordinator: Coordinator {
     }
     
     @ViewBuilder
-    func destinationView(for destination: WorkoutsDestination) -> some View {
-        switch destination {
+    func destinationView(for route: WorkoutsRoute) -> some View {
+        switch route {
         case .workoutDetail(let id):
             WorkoutDetailView(
                 viewModel: makeWorkoutDetailViewModel(workoutId: id),
                 coordinator: self
             )
+        }
+    }
+    
+    @ViewBuilder
+    func sheetView(for sheet: WorkoutsSheet) -> some View {
+        switch sheet {
+        case .routineSelection:
+            RoutineSelectionView(
+                viewModel: makeRoutineSelectionViewModel(),
+                coordinator: self
+            )
+        case .exerciseSelection:
+            ExerciseSelectionSheetContent(coordinator: self)
+        }
+    }
+    
+    @ViewBuilder
+    func coverView(for cover: WorkoutsCover) -> some View {
+        switch cover {
+        case .activeWorkout:
+            if let viewModel = activeWorkoutViewModel {
+                ActiveWorkoutView(viewModel: viewModel, coordinator: self)
+            }
         }
     }
     
@@ -60,24 +80,28 @@ final class WorkoutsCoordinator: Coordinator {
     // MARK: - Navigation Actions
     
     func showWorkoutDetail(workoutId: UUID) {
-        navigationPath.append(WorkoutsDestination.workoutDetail(id: workoutId))
+        path.append(.workoutDetail(id: workoutId))
     }
     
     func showRoutineSelection() {
-        showingRoutineSelection = true
+        sheet = .routineSelection
     }
     
     func dismissRoutineSelection() {
-        showingRoutineSelection = false
+        if sheet == .routineSelection {
+            sheet = nil
+        }
     }
     
     func showExerciseSelection() {
         exerciseSelectionViewModel = makeExerciseSelectionViewModel()
-        showingExerciseSelection = true
+        sheet = .exerciseSelection
     }
     
     func dismissExerciseSelection() {
-        showingExerciseSelection = false
+        if sheet == .exerciseSelection {
+            sheet = nil
+        }
         exerciseSelectionViewModel = nil
     }
     
@@ -119,15 +143,17 @@ final class WorkoutsCoordinator: Coordinator {
     
     private func startActiveWorkout(_ workout: Workout) {
         activeWorkoutViewModel = makeActiveWorkoutViewModel(workout: workout)
-        showingActiveWorkout = true
+        cover = .activeWorkout(id: workout.id)
     }
     
     func finishActiveWorkout(_ workoutId: UUID) {
         container.workoutsUseCaseFactory.makeFinishWorkoutUseCase().finish(workoutID: workoutId, at: Date()) { [weak self] result in
             Task { @MainActor in
-                self?.showingActiveWorkout = false
+                self?.cover = nil
                 self?.activeWorkoutViewModel?.cleanup()
                 self?.activeWorkoutViewModel = nil
+                self?.exerciseSelectionViewModel = nil
+                self?.sheet = nil
                 self?.workoutsListViewModel?.loadWorkouts()
             }
         }
@@ -136,9 +162,11 @@ final class WorkoutsCoordinator: Coordinator {
     func cancelActiveWorkout(_ workoutId: UUID) {
         container.workoutsUseCaseFactory.makeFinishWorkoutUseCase().discard(workoutID: workoutId) { [weak self] _ in
             Task { @MainActor in
-                self?.showingActiveWorkout = false
+                self?.cover = nil
                 self?.activeWorkoutViewModel?.cleanup()
                 self?.activeWorkoutViewModel = nil
+                self?.exerciseSelectionViewModel = nil
+                self?.sheet = nil
             }
         }
     }
@@ -170,8 +198,26 @@ final class WorkoutsCoordinator: Coordinator {
 }
 
 /// Navigation destinations for the Workouts flow
-enum WorkoutsDestination: Hashable {
+enum WorkoutsRoute: Hashable {
     case workoutDetail(id: UUID)
+}
+
+enum WorkoutsSheet: String, Identifiable {
+    case routineSelection
+    case exerciseSelection
+    
+    var id: String { rawValue }
+}
+
+enum WorkoutsCover: Identifiable, Equatable {
+    case activeWorkout(id: UUID)
+    
+    var id: UUID {
+        switch self {
+        case .activeWorkout(let id):
+            return id
+        }
+    }
 }
 
 /// Internal content view that uses @Bindable for navigation
@@ -179,33 +225,39 @@ private struct WorkoutsCoordinatorContentView: View {
     @Bindable var coordinator: WorkoutsCoordinator
     
     var body: some View {
-        NavigationStack(path: $coordinator.navigationPath) {
+        NavigationStack(path: $coordinator.path) {
             if let viewModel = coordinator.workoutsListViewModel {
                 WorkoutsListView(viewModel: viewModel, coordinator: coordinator)
-                    .navigationDestination(for: WorkoutsDestination.self) { destination in
-                        coordinator.destinationView(for: destination)
+                    .navigationDestination(for: WorkoutsRoute.self) { route in
+                        coordinator.destinationView(for: route)
                     }
             }
         }
-        .sheet(isPresented: $coordinator.showingRoutineSelection) {
-            RoutineSelectionView(
-                viewModel: coordinator.makeRoutineSelectionViewModel(),
-                coordinator: coordinator
+        .sheet(item: $coordinator.sheet) { sheet in
+            coordinator.sheetView(for: sheet)
+        }
+        .fullScreenCover(item: $coordinator.cover) { cover in
+            coordinator.coverView(for: cover)
+        }
+    }
+}
+
+private struct ExerciseSelectionSheetContent: View {
+    @Bindable var coordinator: WorkoutsCoordinator
+    
+    var body: some View {
+        if let viewModel = coordinator.exerciseSelectionViewModel {
+            ExerciseSelectionView(
+                viewModel: viewModel,
+                onExerciseSelected: { exercise in
+                    coordinator.addExerciseToActiveWorkout(exercise)
+                }
             )
-        }
-        .sheet(isPresented: $coordinator.showingExerciseSelection) {
-            if let viewModel = coordinator.exerciseSelectionViewModel {
-                ExerciseSelectionView(
-                    viewModel: viewModel,
-                    onExerciseSelected: { exercise in
-                        coordinator.addExerciseToActiveWorkout(exercise)
-                    }
-                )
-            }
-        }
-        .fullScreenCover(isPresented: $coordinator.showingActiveWorkout) {
-            if let viewModel = coordinator.activeWorkoutViewModel {
-                ActiveWorkoutView(viewModel: viewModel, coordinator: coordinator)
+        } else {
+            ContentUnavailableView {
+                Label("No Exercise Selection", systemImage: "exclamationmark.triangle")
+            } description: {
+                Text("Unable to load the exercise selector.")
             }
         }
     }
