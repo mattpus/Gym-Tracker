@@ -17,6 +17,13 @@ struct WorkoutsListView: View {
         }
         .navigationTitle("Workouts")
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("New Routine") {
+                    coordinator.showRoutineBuilder()
+                }
+                .accessibilityIdentifier("newRoutineButton")
+            }
+            
             ToolbarItem(placement: .primaryAction) {
                 Menu {
                     Button {
@@ -34,6 +41,7 @@ struct WorkoutsListView: View {
                     Image(systemName: "plus.circle.fill")
                         .font(.title2)
                 }
+                .accessibilityIdentifier("workoutAddMenuButton")
             }
         }
         .refreshable {
@@ -74,6 +82,13 @@ struct WorkoutsListView: View {
                 Text("Start Workout")
             }
             .buttonStyle(.borderedProminent)
+            
+            Button {
+                coordinator.showRoutineBuilder()
+            } label: {
+                Text("Create Routine")
+            }
+            .buttonStyle(.bordered)
         }
     }
 }

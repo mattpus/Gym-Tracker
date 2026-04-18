@@ -10,6 +10,7 @@ final class RoutineSelectionViewModel {
     var error: Error?
     
     private let loadRoutinesUseCase: RoutinesLoading
+    private var loadedRoutines: [Routine] = []
     
     init(loadRoutinesUseCase: RoutinesLoading) {
         self.loadRoutinesUseCase = loadRoutinesUseCase
@@ -24,6 +25,7 @@ final class RoutineSelectionViewModel {
                 self?.isLoading = false
                 switch result {
                 case .success(let routines):
+                    self?.loadedRoutines = routines
                     self?.routines = routines.map { RoutineItemViewModel(routine: $0) }
                 case .failure(let error):
                     self?.error = error
@@ -33,7 +35,7 @@ final class RoutineSelectionViewModel {
     }
     
     func routine(for id: UUID) -> Routine? {
-        nil // Will be loaded from repository when needed
+        loadedRoutines.first { $0.id == id }
     }
 }
 

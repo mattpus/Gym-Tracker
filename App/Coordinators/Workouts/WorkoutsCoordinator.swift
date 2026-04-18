@@ -16,6 +16,7 @@ final class WorkoutsCoordinator: Coordinator {
     private(set) var workoutsListViewModel: WorkoutsListViewModel?
     private(set) var activeWorkoutViewModel: ActiveWorkoutViewModel?
     private(set) var exerciseSelectionViewModel: ExerciseSelectionViewModel?
+    private(set) var routineBuilderViewModel: RoutineBuilderViewModel?
     
     init(container: DependencyContainer) {
         self.container = container
@@ -51,6 +52,12 @@ final class WorkoutsCoordinator: Coordinator {
             )
         case .exerciseSelection:
             ExerciseSelectionSheetContent(coordinator: self)
+        case .routineBuilder:
+            if let viewModel = routineBuilderViewModel {
+                RoutineBuilderView(viewModel: viewModel, coordinator: self)
+            }
+        case .routineBuilderExerciseSelection:
+            RoutineBuilderExerciseSelectionSheetContent(coordinator: self)
         }
     }
     
@@ -74,6 +81,12 @@ final class WorkoutsCoordinator: Coordinator {
         ExerciseSelectionViewModel(
             loadExerciseLibraryUseCase: container.exerciseLibraryUseCaseFactory.makeLoadExerciseLibraryUseCase(),
             searchExerciseLibraryUseCase: container.exerciseLibraryUseCaseFactory.makeSearchExerciseLibraryUseCase()
+        )
+    }
+    
+    func makeRoutineBuilderViewModel() -> RoutineBuilderViewModel {
+        RoutineBuilderViewModel(
+            createRoutineUseCase: container.workoutsUseCaseFactory.makeCreateRoutineUseCase()
         )
     }
     
@@ -105,9 +118,53 @@ final class WorkoutsCoordinator: Coordinator {
         exerciseSelectionViewModel = nil
     }
     
+    func showRoutineBuilder() {
+        routineBuilderViewModel = makeRoutineBuilderViewModel()
+        sheet = .routineBuilder
+    }
+    
+    func dismissRoutineBuilder() {
+        if sheet == .routineBuilder || sheet == .routineBuilderExerciseSelection {
+            sheet = nil
+        }
+        routineBuilderViewModel = nil
+        exerciseSelectionViewModel = nil
+    }
+    
+    func showRoutineBuilderExerciseSelection() {
+        exerciseSelectionViewModel = makeExerciseSelectionViewModel()
+        sheet = .routineBuilderExerciseSelection
+    }
+    
+    func dismissRoutineBuilderExerciseSelection() {
+        if sheet == .routineBuilderExerciseSelection {
+            sheet = .routineBuilder
+        }
+        exerciseSelectionViewModel = nil
+    }
+    
     func addExerciseToActiveWorkout(_ exercise: Exercise) {
         activeWorkoutViewModel?.addExercise(exercise)
         dismissExerciseSelection()
+    }
+    
+    func addExerciseToRoutineBuilder(_ exercise: Exercise) {
+        let item = SelectableExerciseItem(
+            id: exercise.id,
+            name: exercise.name,
+            primaryMuscleGroup: .chest,
+            secondaryMuscleGroups: [],
+            equipmentType: .barbell,
+            isCustom: false
+        )
+        routineBuilderViewModel?.addExercise(item)
+        dismissRoutineBuilderExerciseSelection()
+    }
+    
+    func didSaveRoutine() {
+        sheet = nil
+        routineBuilderViewModel = nil
+        exerciseSelectionViewModel = nil
     }
     
     func startEmptyWorkout() {
@@ -131,11 +188,13 @@ final class WorkoutsCoordinator: Coordinator {
     func startWorkoutFromRoutine(_ routine: Routine) {
         container.workoutsUseCaseFactory.makeStartRoutineUseCase().startRoutine(id: routine.id) { [weak self] result in
             Task { @MainActor in
-                if case .success = result {
+                switch result {
+                case .success(let workout):
                     self?.dismissRoutineSelection()
-                    // Load workouts to get the newly created workout
+                    self?.startActiveWorkout(workout)
                     self?.workoutsListViewModel?.loadWorkouts()
-                    // For now, just show the workout list - could be improved
+                case .failure:
+                    break
                 }
             }
         }
@@ -157,6 +216,11 @@ final class WorkoutsCoordinator: Coordinator {
                 self?.workoutsListViewModel?.loadWorkouts()
             }
         }
+    }
+    
+    func saveActiveWorkoutAsRoutine(named name: String?) {
+        guard let workout = activeWorkoutViewModel?.workout else { return }
+        container.workoutsUseCaseFactory.makeSaveWorkoutAsRoutineUseCase().save(workout: workout, as: name) { _ in }
     }
     
     func cancelActiveWorkout(_ workoutId: UUID) {
@@ -205,6 +269,8 @@ enum WorkoutsRoute: Hashable {
 enum WorkoutsSheet: String, Identifiable {
     case routineSelection
     case exerciseSelection
+    case routineBuilder
+    case routineBuilderExerciseSelection
     
     var id: String { rawValue }
 }
@@ -251,6 +317,27 @@ private struct ExerciseSelectionSheetContent: View {
                 viewModel: viewModel,
                 onExerciseSelected: { exercise in
                     coordinator.addExerciseToActiveWorkout(exercise)
+                }
+            )
+        } else {
+            ContentUnavailableView {
+                Label("No Exercise Selection", systemImage: "exclamationmark.triangle")
+            } description: {
+                Text("Unable to load the exercise selector.")
+            }
+        }
+    }
+}
+
+private struct RoutineBuilderExerciseSelectionSheetContent: View {
+    @Bindable var coordinator: WorkoutsCoordinator
+    
+    var body: some View {
+        if let viewModel = coordinator.exerciseSelectionViewModel {
+            ExerciseSelectionView(
+                viewModel: viewModel,
+                onExerciseSelected: { exercise in
+                    coordinator.addExerciseToRoutineBuilder(exercise)
                 }
             )
         } else {

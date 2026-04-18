@@ -57,21 +57,17 @@ struct RoutineSelectionView: View {
                 }
             }
             
-            // Routines
             Section("Your Routines") {
                 ForEach(viewModel.routines) { routine in
-                    RoutineRowView(routine: routine)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            // Create a Routine from the ViewModel data
-                            // In a real implementation, we'd fetch the full routine
-                            let routineToStart = Routine(
-                                id: routine.id,
-                                name: routine.name,
-                                exercises: []
-                            )
-                            coordinator.startWorkoutFromRoutine(routineToStart)
+                    Button {
+                        if let fullRoutine = viewModel.routine(for: routine.id) {
+                            coordinator.startWorkoutFromRoutine(fullRoutine)
                         }
+                    } label: {
+                        RoutineRowView(routine: routine)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("routineRow_\(routine.id)")
                 }
             }
         }
@@ -86,11 +82,18 @@ struct RoutineSelectionView: View {
         } actions: {
             Button {
                 coordinator.dismissRoutineSelection()
+                coordinator.showRoutineBuilder()
+            } label: {
+                Text("Create Routine")
+            }
+            .buttonStyle(.borderedProminent)
+            
+            Button {
+                coordinator.dismissRoutineSelection()
                 coordinator.startEmptyWorkout()
             } label: {
                 Text("Start Empty Workout")
             }
-            .buttonStyle(.borderedProminent)
         }
     }
 }

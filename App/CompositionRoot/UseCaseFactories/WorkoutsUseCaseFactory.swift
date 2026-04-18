@@ -63,6 +63,10 @@ final class WorkoutsUseCaseFactory: Sendable {
         DeleteWorkoutUseCase(repository: workoutRepository)
     }
     
+    func makeSaveWorkoutAsRoutineUseCase() -> WorkoutRoutineSaving {
+        SaveWorkoutAsRoutineUseCase(repository: routineRepository)
+    }
+    
     // MARK: - Exercise Set Logging
     
     func makeExerciseSetLoggingUseCase() -> ExerciseSetLogging {
@@ -80,6 +84,10 @@ final class WorkoutsUseCaseFactory: Sendable {
     
     func makeLoadRoutinesUseCase() -> RoutinesLoading {
         LoadRoutinesUseCase(repository: routineRepository)
+    }
+    
+    func makeCreateRoutineUseCase() -> RoutineBuilding {
+        CreateRoutineUseCase(repository: routineRepository)
     }
     
     // MARK: - Exercise History
