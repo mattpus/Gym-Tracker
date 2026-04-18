@@ -45,7 +45,10 @@ final class ProgressionCoordinator: Coordinator {
     
     private func makeProgressionDashboardViewModel() -> ProgressionDashboardViewModel {
         ProgressionDashboardViewModel(
-            progressionRecommendationUseCase: container.progressionUseCaseFactory.makeProgressionRecommendationUseCase()
+            progressionRecommendationUseCase: container.progressionUseCaseFactory.makeProgressionRecommendationUseCase(),
+            loadExerciseNames: { [container] in
+                try container.progressionUseCaseFactory.loadTrackedExerciseNames()
+            }
         )
     }
     
@@ -62,7 +65,6 @@ enum ProgressionDestination: Hashable {
     case exerciseProgression(exerciseName: String)
 }
 
-/// Internal content view that uses @Bindable for navigation
 private struct ProgressionCoordinatorContentView: View {
     @Bindable var coordinator: ProgressionCoordinator
     

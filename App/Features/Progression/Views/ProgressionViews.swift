@@ -11,6 +11,12 @@ struct ProgressionDashboardView: View {
                 if viewModel.isLoading {
                     ProgressView()
                         .padding()
+                } else if let error = viewModel.error {
+                    ContentUnavailableView {
+                        Label("Unable to Load Progress", systemImage: "exclamationmark.triangle")
+                    } description: {
+                        Text(error.localizedDescription)
+                    }
                 } else if viewModel.recommendations.isEmpty {
                     emptyStateView
                 } else {
@@ -61,10 +67,7 @@ struct ProgressionCard: View {
                     Text(recommendation.exerciseName)
                         .font(.headline)
                     Spacer()
-                    if recommendation.hasWeightIncrease {
-                        Image(systemName: "arrow.up.circle.fill")
-                            .foregroundStyle(.green)
-                    }
+                    confidenceBadge
                 }
                 
                 HStack(spacing: 20) {
@@ -72,7 +75,7 @@ struct ProgressionCard: View {
                         Text("Current")
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        Text("\(recommendation.currentWeight, specifier: "%.1f") kg × \(recommendation.currentReps)")
+                        Text(currentSummary)
                             .font(.subheadline)
                     }
                     
@@ -83,10 +86,10 @@ struct ProgressionCard: View {
                         Text("Recommended")
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        Text("\(recommendation.recommendedWeight, specifier: "%.1f") kg × \(recommendation.recommendedReps)")
+                        Text(recommendedSummary)
                             .font(.subheadline)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.green)
+                            .foregroundStyle(recommendation.hasWeightIncrease ? .green : .primary)
                     }
                 }
                 
@@ -100,6 +103,29 @@ struct ProgressionCard: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain)
+    }
+    
+    private var currentSummary: String {
+        if recommendation.currentWeight > 0 {
+            return "\(recommendation.currentWeight, specifier: "%.1f") kg × \(recommendation.currentReps)"
+        }
+        return "Baseline needed"
+    }
+    
+    private var recommendedSummary: String {
+        if recommendation.recommendedWeight > 0 {
+            return "\(recommendation.recommendedWeight, specifier: "%.1f") kg × \(recommendation.recommendedReps)"
+        }
+        return "\(recommendation.recommendedReps) reps"
+    }
+    
+    private var confidenceBadge: some View {
+        Text(recommendation.confidence.rawValue.capitalized)
+            .font(.caption2)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(.secondary.opacity(0.12))
+            .clipShape(Capsule())
     }
 }
 
@@ -121,7 +147,7 @@ struct ExerciseProgressionView: View {
                                     Text("Current")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
-                                    Text("\(recommendation.currentWeight, specifier: "%.1f") kg × \(recommendation.currentReps) reps")
+                                    Text(currentSummary(for: recommendation))
                                         .font(.title3)
                                 }
                                 
@@ -137,10 +163,10 @@ struct ExerciseProgressionView: View {
                                     Text("Next")
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
-                                    Text("\(recommendation.recommendedWeight, specifier: "%.1f") kg × \(recommendation.recommendedReps) reps")
+                                    Text(recommendedSummary(for: recommendation))
                                         .font(.title3)
                                         .fontWeight(.semibold)
-                                        .foregroundStyle(.green)
+                                        .foregroundStyle(recommendation.hasWeightIncrease ? .green : .primary)
                                 }
                             }
                         }
@@ -150,6 +176,10 @@ struct ExerciseProgressionView: View {
                     Section("Why This Recommendation") {
                         Text(recommendation.reasoning)
                             .foregroundStyle(.secondary)
+                    }
+                    
+                    Section("Confidence") {
+                        Text(recommendation.confidence.rawValue.capitalized)
                     }
                     
                     if recommendation.hasWeightIncrease {
@@ -174,5 +204,19 @@ struct ExerciseProgressionView: View {
         .onAppear {
             viewModel.loadData()
         }
+    }
+    
+    private func currentSummary(for recommendation: ProgressionRecommendationItem) -> String {
+        if recommendation.currentWeight > 0 {
+            return "\(recommendation.currentWeight, specifier: "%.1f") kg × \(recommendation.currentReps) reps"
+        }
+        return "Baseline needed"
+    }
+    
+    private func recommendedSummary(for recommendation: ProgressionRecommendationItem) -> String {
+        if recommendation.recommendedWeight > 0 {
+            return "\(recommendation.recommendedWeight, specifier: "%.1f") kg × \(recommendation.recommendedReps) reps"
+        }
+        return "\(recommendation.recommendedReps) reps"
     }
 }

@@ -20,4 +20,8 @@ final class ProgressionUseCaseFactory: Sendable {
             progressionService: progressionService
         )
     }
+    
+    func loadTrackedExerciseNames() throws -> [String] {
+        try exerciseHistoryRepository.loadAllExerciseNames()
+    }
 }

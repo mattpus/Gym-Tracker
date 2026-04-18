@@ -10,17 +10,37 @@ final class ProgressionDashboardViewModel {
     var error: Error?
     
     private let progressionRecommendationUseCase: ProgressionRecommendationProviding
+    private let loadExerciseNames: () throws -> [String]
     
-    init(progressionRecommendationUseCase: ProgressionRecommendationProviding) {
+    init(
+        progressionRecommendationUseCase: ProgressionRecommendationProviding,
+        loadExerciseNames: @escaping () throws -> [String]
+    ) {
         self.progressionRecommendationUseCase = progressionRecommendationUseCase
+        self.loadExerciseNames = loadExerciseNames
     }
     
     func loadData() {
         isLoading = true
         error = nil
         
-        // Load recommendations for recent exercises
-        // In a real implementation, we'd get the list of exercises the user has performed
+        do {
+            let exerciseNames = try loadExerciseNames()
+            let uniqueExerciseNames = Array(Set(exerciseNames)).sorted()
+            
+            recommendations = uniqueExerciseNames.prefix(6).compactMap { exerciseName in
+                do {
+                    let recommendation = try progressionRecommendationUseCase.getRecommendation(for: exerciseName)
+                    return ProgressionRecommendationItem(recommendation: recommendation)
+                } catch {
+                    return nil
+                }
+            }
+        } catch {
+            self.error = error
+            recommendations = []
+        }
+        
         isLoading = false
     }
 }
@@ -33,14 +53,18 @@ struct ProgressionRecommendationItem: Identifiable {
     let currentReps: Int
     let recommendedReps: Int
     let reasoning: String
+    let confidence: ConfidenceLevel
+    let recommendationType: RecommendationType
     
     init(recommendation: ProgressionRecommendation) {
         self.exerciseName = recommendation.exerciseName
-        self.currentWeight = (recommendation.recommendedWeight ?? 0) - 2.5 // Approximate
+        self.currentWeight = max((recommendation.recommendedWeight ?? 0) - 2.5, 0)
         self.recommendedWeight = recommendation.recommendedWeight ?? 0
-        self.currentReps = recommendation.recommendedReps ?? 0
+        self.currentReps = max((recommendation.recommendedReps ?? 0) - 1, 0)
         self.recommendedReps = recommendation.recommendedReps ?? 0
         self.reasoning = recommendation.reason
+        self.confidence = recommendation.confidence
+        self.recommendationType = recommendation.recommendationType
     }
     
     var weightChange: Double {
@@ -48,7 +72,7 @@ struct ProgressionRecommendationItem: Identifiable {
     }
     
     var hasWeightIncrease: Bool {
-        recommendedWeight > currentWeight
+        recommendationType == .increaseWeight && recommendedWeight > currentWeight
     }
 }
 
