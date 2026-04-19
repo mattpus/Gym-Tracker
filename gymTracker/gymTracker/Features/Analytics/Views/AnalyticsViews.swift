@@ -3,7 +3,7 @@ import SwiftUI
 /// Analytics Dashboard view
 struct AnalyticsDashboardView: View {
     @Bindable var viewModel: AnalyticsDashboardViewModel
-    let coordinator: AnalyticsCoordinator
+    let router: AnalyticsRouter
     
     var body: some View {
         AppScrollScreen {
@@ -64,7 +64,7 @@ struct AnalyticsDashboardView: View {
                     .font(.headline)
                 Spacer()
                 Button("Details") {
-                    coordinator.showWorkoutFrequency()
+                    router.showWorkoutFrequency()
                 }
                 .font(.subheadline)
             }
@@ -96,7 +96,7 @@ struct AnalyticsDashboardView: View {
                     .font(.headline)
                 Spacer()
                 Button("Details") {
-                    coordinator.showMuscleDistribution()
+                    router.showMuscleDistribution()
                 }
                 .font(.subheadline)
             }

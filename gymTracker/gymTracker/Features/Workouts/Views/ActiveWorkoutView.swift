@@ -3,7 +3,7 @@ import SwiftUI
 /// Active workout view for logging exercises during a workout session
 struct ActiveWorkoutView: View {
     @Bindable var viewModel: ActiveWorkoutViewModel
-    @Bindable var coordinator: WorkoutsCoordinator
+    @Bindable var router: WorkoutsRouter
     
     @State private var showingFinishConfirmation = false
     @State private var showingCancelConfirmation = false
@@ -40,7 +40,7 @@ struct ActiveWorkoutView: View {
             }
             .confirmationDialog("Finish Workout?", isPresented: $showingFinishConfirmation) {
                 Button("Finish Workout") {
-                    coordinator.finishActiveWorkout(viewModel.workoutId)
+                    router.finishActiveWorkout(viewModel.workoutId)
                 }
                 Button("Cancel", role: .cancel) {}
             } message: {
@@ -48,7 +48,7 @@ struct ActiveWorkoutView: View {
             }
             .confirmationDialog("Cancel Workout?", isPresented: $showingCancelConfirmation) {
                 Button("Discard Workout", role: .destructive) {
-                    coordinator.cancelActiveWorkout(viewModel.workoutId)
+                    router.cancelActiveWorkout(viewModel.workoutId)
                 }
                 Button("Continue Workout", role: .cancel) {}
             } message: {
@@ -126,7 +126,7 @@ struct ActiveWorkoutView: View {
             
             // Add Exercise Button
             Button {
-                coordinator.showExerciseSelection()
+                router.showExerciseSelection()
             } label: {
                 Label("Add Exercise", systemImage: "plus.circle.fill")
             }

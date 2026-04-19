@@ -3,7 +3,7 @@ import SwiftUI
 /// Workout detail view showing exercises and statistics
 struct WorkoutDetailView: View {
     @Bindable var viewModel: WorkoutDetailViewModel
-    let coordinator: WorkoutsCoordinator
+    let router: WorkoutsRouter
     
     var body: some View {
         Group {
@@ -25,7 +25,7 @@ struct WorkoutDetailView: View {
             if let workout = viewModel.workout {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Edit") {
-                        coordinator.editFinishedWorkout(workoutId: workout.id)
+                        router.editFinishedWorkout(workoutId: workout.id)
                     }
                 }
             }

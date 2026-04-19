@@ -9,20 +9,16 @@ import SwiftUI
 
 @main
 struct gymTrackerApp: App {
-  
-        @State private var appCoordinator: AppCoordinator
-        
-        init() {
-            let container = DependencyContainer()
-            _appCoordinator = State(initialValue: AppCoordinator(container: container))
+    @State private var router: MainRouter
+
+    init() {
+        let container = DependencyContainer()
+        _router = State(initialValue: MainRouter(container: container))
+    }
+
+    var body: some Scene {
+        WindowGroup {
+            AppRootView(router: router)
         }
-        
-        var body: some Scene {
-            WindowGroup {
-                AppCoordinatorView(coordinator: appCoordinator)
-                    .onAppear {
-                        appCoordinator.start()
-                    }
-            }
-        }
+    }
 }

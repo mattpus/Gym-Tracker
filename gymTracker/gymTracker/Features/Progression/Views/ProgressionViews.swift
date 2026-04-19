@@ -3,7 +3,7 @@ import SwiftUI
 /// Progression Dashboard view
 struct ProgressionDashboardView: View {
     @Bindable var viewModel: ProgressionDashboardViewModel
-    let coordinator: ProgressionCoordinator
+    let router: ProgressionRouter
     
     var body: some View {
         AppScrollScreen {
@@ -47,7 +47,7 @@ struct ProgressionDashboardView: View {
             
             ForEach(viewModel.recommendations) { recommendation in
                 ProgressionCard(recommendation: recommendation) {
-                    coordinator.showExerciseProgression(exerciseName: recommendation.exerciseName)
+                    router.showExerciseProgression(exerciseName: recommendation.exerciseName)
                 }
             }
         }
@@ -130,7 +130,7 @@ struct ProgressionCard: View {
 /// Exercise-specific progression view
 struct ExerciseProgressionView: View {
     @Bindable var viewModel: ExerciseProgressionViewModel
-    let coordinator: ProgressionCoordinator
+    let router: ProgressionRouter
     
     var body: some View {
         Group {

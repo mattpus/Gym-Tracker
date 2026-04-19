@@ -3,7 +3,7 @@ import SwiftUI
 /// Main workouts list view
 struct WorkoutsListView: View {
     @Bindable var viewModel: WorkoutsListViewModel
-    let coordinator: WorkoutsCoordinator
+    let router: WorkoutsRouter
     
     var body: some View {
         Group {
@@ -19,7 +19,7 @@ struct WorkoutsListView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button("New Routine") {
-                    coordinator.showRoutineBuilder()
+                    router.showRoutineBuilder()
                 }
                 .accessibilityIdentifier("newRoutineButton")
             }
@@ -27,13 +27,13 @@ struct WorkoutsListView: View {
             ToolbarItem(placement: .primaryAction) {
                 Menu {
                     Button {
-                        coordinator.startEmptyWorkout()
+                        router.startEmptyWorkout()
                     } label: {
                         Label("Empty Workout", systemImage: "plus")
                     }
                     
                     Button {
-                        coordinator.showRoutineSelection()
+                        router.showRoutineSelection()
                     } label: {
                         Label("From Routine", systemImage: "doc.text")
                     }
@@ -60,7 +60,7 @@ struct WorkoutsListView: View {
                 WorkoutRowView(workout: workout)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        coordinator.showWorkoutDetail(workoutId: workout.id)
+                        router.showWorkoutDetail(workoutId: workout.id)
                     }
             }
             .onDelete { offsets in
@@ -77,14 +77,14 @@ struct WorkoutsListView: View {
             Text("Start your first workout to begin tracking your progress.")
         } actions: {
             Button {
-                coordinator.startEmptyWorkout()
+                router.startEmptyWorkout()
             } label: {
                 Text("Start Workout")
             }
             .buttonStyle(.borderedProminent)
             
             Button {
-                coordinator.showRoutineBuilder()
+                router.showRoutineBuilder()
             } label: {
                 Text("Create Routine")
             }

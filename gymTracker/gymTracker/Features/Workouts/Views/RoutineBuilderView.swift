@@ -2,7 +2,7 @@ import SwiftUI
 
 struct RoutineBuilderView: View {
     @Bindable var viewModel: RoutineBuilderViewModel
-    @Bindable var coordinator: WorkoutsCoordinator
+    @Bindable var router: WorkoutsRouter
     
     var body: some View {
         NavigationStack {
@@ -14,7 +14,7 @@ struct RoutineBuilderView: View {
                 
                 Section {
                     Button {
-                        coordinator.showRoutineBuilderExerciseSelection()
+                        router.showRoutineBuilderExerciseSelection()
                     } label: {
                         Label("Add Exercise", systemImage: "plus.circle.fill")
                     }
@@ -46,7 +46,7 @@ struct RoutineBuilderView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
-                        coordinator.dismissRoutineBuilder()
+                        router.dismissRoutineBuilder()
                     }
                 }
                 
@@ -54,7 +54,7 @@ struct RoutineBuilderView: View {
                     Button("Save") {
                         viewModel.save { saved in
                             if saved {
-                                coordinator.didSaveRoutine()
+                                router.didSaveRoutine()
                             }
                         }
                     }

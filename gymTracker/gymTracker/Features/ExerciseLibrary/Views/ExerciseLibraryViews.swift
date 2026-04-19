@@ -3,7 +3,7 @@ import SwiftUI
 /// Exercise Library view
 struct ExerciseLibraryView: View {
     @Bindable var viewModel: ExerciseLibraryViewModel
-    let coordinator: ExerciseLibraryCoordinator
+    let router: HomeRouter
     
     var body: some View {
         Group {
@@ -23,7 +23,7 @@ struct ExerciseLibraryView: View {
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
-                    coordinator.showAddCustomExercise()
+                    router.showAddCustomExercise()
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -42,7 +42,7 @@ struct ExerciseLibraryView: View {
                 ExerciseLibraryRow(exercise: exercise)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        coordinator.showExerciseDetail(exerciseId: exercise.id)
+                        router.showExerciseDetail(exerciseId: exercise.id)
                     }
             }
         }
@@ -84,7 +84,7 @@ struct ExerciseLibraryRow: View {
 /// Exercise Detail view
 struct ExerciseDetailView: View {
     @Bindable var viewModel: ExerciseDetailViewModel
-    let coordinator: ExerciseLibraryCoordinator
+    let router: HomeRouter
     
     var body: some View {
         Group {
@@ -100,11 +100,11 @@ struct ExerciseDetailView: View {
                 ToolbarItem(placement: .primaryAction) {
                     Menu {
                         Button("Edit") {
-                            coordinator.showEditCustomExercise(exercise)
+                            router.showEditCustomExercise(exercise)
                         }
 
                         Button("Delete", role: .destructive) {
-                            coordinator.deleteCustomExercise(exercise.id)
+                            router.deleteCustomExercise(exercise.id)
                         }
                     } label: {
                         Image(systemName: "ellipsis.circle")
@@ -148,7 +148,7 @@ struct ExerciseDetailView: View {
 /// Add Custom Exercise view
 struct AddCustomExerciseView: View {
     @Bindable var viewModel: AddCustomExerciseViewModel
-    let coordinator: ExerciseLibraryCoordinator
+    let router: HomeRouter
     
     @Environment(\.dismiss) private var dismiss
     
@@ -188,7 +188,7 @@ struct AddCustomExerciseView: View {
                     Button("Save") {
                         viewModel.save { success in
                             if success {
-                                coordinator.dismissAddCustomExercise()
+                                router.dismissAddCustomExercise()
                             }
                         }
                     }
@@ -201,7 +201,7 @@ struct AddCustomExerciseView: View {
 
 struct EditCustomExerciseView: View {
     @Bindable var viewModel: EditCustomExerciseViewModel
-    let coordinator: ExerciseLibraryCoordinator
+    let router: HomeRouter
 
     @Environment(\.dismiss) private var dismiss
 
@@ -241,7 +241,7 @@ struct EditCustomExerciseView: View {
                     Button("Save") {
                         viewModel.save { success in
                             if success {
-                                coordinator.dismissEditCustomExercise()
+                                router.dismissEditCustomExercise()
                             }
                         }
                     }

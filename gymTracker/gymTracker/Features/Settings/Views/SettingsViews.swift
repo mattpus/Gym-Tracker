@@ -3,13 +3,13 @@ import SwiftUI
 /// Settings view
 struct SettingsView: View {
     @Bindable var viewModel: SettingsViewModel
-    let coordinator: SettingsCoordinator
+    let router: SettingsRouter
     
     var body: some View {
         List {
             Section("Appearance") {
                 Button {
-                    coordinator.showAppearanceSettings()
+                    router.showAppearanceSettings()
                 } label: {
                     Label("Appearance", systemImage: "paintbrush")
                 }
@@ -17,7 +17,7 @@ struct SettingsView: View {
             
             Section("Notifications") {
                 Button {
-                    coordinator.showNotificationSettings()
+                    router.showNotificationSettings()
                 } label: {
                     Label("Notifications", systemImage: "bell")
                 }
@@ -25,7 +25,7 @@ struct SettingsView: View {
             
             Section("Data") {
                 Button {
-                    coordinator.showDataSettings()
+                    router.showDataSettings()
                 } label: {
                     Label("Data Management", systemImage: "externaldrive")
                 }
@@ -33,7 +33,7 @@ struct SettingsView: View {
             
             Section("About") {
                 Button {
-                    coordinator.showAbout()
+                    router.showAbout()
                 } label: {
                     Label("About", systemImage: "info.circle")
                 }

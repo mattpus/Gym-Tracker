@@ -3,7 +3,7 @@ import SwiftUI
 /// Routine selection view for starting a workout from a template
 struct RoutineSelectionView: View {
     @Bindable var viewModel: RoutineSelectionViewModel
-    let coordinator: WorkoutsCoordinator
+    let router: WorkoutsRouter
     
     @Environment(\.dismiss) private var dismiss
     
@@ -23,7 +23,7 @@ struct RoutineSelectionView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {
-                        coordinator.dismissRoutineSelection()
+                        router.dismissRoutineSelection()
                     }
                 }
             }
@@ -38,8 +38,7 @@ struct RoutineSelectionView: View {
             // Quick start option
             Section {
                 Button {
-                    coordinator.dismissRoutineSelection()
-                    coordinator.startEmptyWorkout()
+                    router.startEmptyWorkout()
                 } label: {
                     HStack {
                         Image(systemName: "plus.circle.fill")
@@ -60,7 +59,7 @@ struct RoutineSelectionView: View {
                 ForEach(viewModel.routines) { routine in
                     Button {
                         if let fullRoutine = viewModel.routine(for: routine.id) {
-                            coordinator.startWorkoutFromRoutine(fullRoutine)
+                            router.startWorkoutFromRoutine(fullRoutine)
                         }
                     } label: {
                         RoutineRowView(routine: routine)
@@ -80,16 +79,15 @@ struct RoutineSelectionView: View {
             Text("Create routines to quickly start workouts with your favorite exercises.")
         } actions: {
             Button {
-                coordinator.dismissRoutineSelection()
-                coordinator.showRoutineBuilder()
+                router.dismissRoutineSelection()
+                router.showRoutineBuilder()
             } label: {
                 Text("Create Routine")
             }
             .buttonStyle(.borderedProminent)
             
             Button {
-                coordinator.dismissRoutineSelection()
-                coordinator.startEmptyWorkout()
+                router.startEmptyWorkout()
             } label: {
                 Text("Start Empty Workout")
             }

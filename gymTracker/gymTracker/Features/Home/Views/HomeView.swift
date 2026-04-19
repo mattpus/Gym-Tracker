@@ -3,7 +3,7 @@ import SwiftUI
 /// Home view with quick actions and overview
 struct HomeView: View {
     @Bindable var viewModel: HomeViewModel
-    let coordinator: HomeCoordinator
+    let router: HomeRouter
     
     var body: some View {
         AppScrollScreen {
@@ -79,7 +79,7 @@ struct HomeView: View {
                     systemImage: "plus.circle.fill",
                     color: .blue
                 ) {
-                    coordinator.startWorkout()
+                    router.startWorkout()
                 }
                 
                 QuickActionButton(
@@ -87,7 +87,7 @@ struct HomeView: View {
                     systemImage: "dumbbell.fill",
                     color: .green
                 ) {
-                    coordinator.showExerciseLibrary()
+                    router.showExerciseLibrary()
                 }
             }
         }
@@ -100,7 +100,7 @@ struct HomeView: View {
                     .font(.headline)
                 Spacer()
                 Button("See All") {
-                    coordinator.showWorkouts()
+                    router.showWorkouts()
                 }
                 .font(.subheadline)
             }
@@ -115,7 +115,7 @@ struct HomeView: View {
                         RecentWorkoutCard(workout: workout)
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                coordinator.showWorkoutDetail(workout.id)
+                                router.showWorkoutDetail(workout.id)
                             }
                     }
                 }
