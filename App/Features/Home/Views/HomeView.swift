@@ -6,21 +6,18 @@ struct HomeView: View {
     let coordinator: HomeCoordinator
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                // Welcome Section
-                welcomeSection
-                
-                // Quick Stats
-                statsSection
-                
-                // Quick Actions
-                quickActionsSection
-                
-                // Recent Workouts
-                recentWorkoutsSection
-            }
-            .padding()
+        AppScrollScreen {
+            // Welcome Section
+            welcomeSection
+            
+            // Quick Stats
+            statsSection
+            
+            // Quick Actions
+            quickActionsSection
+            
+            // Recent Workouts
+            recentWorkoutsSection
         }
         .navigationTitle("Gym Tracker")
         .onAppear {
@@ -39,7 +36,7 @@ struct HomeView: View {
             Text("Ready to crush your workout?")
                 .foregroundStyle(.secondary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+       
     }
     
     private var greeting: String {
@@ -111,7 +108,6 @@ struct HomeView: View {
             if viewModel.recentWorkouts.isEmpty {
                 Text("No workouts yet")
                     .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
             } else {
                 VStack(spacing: 12) {

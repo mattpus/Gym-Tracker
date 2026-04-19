@@ -22,11 +22,11 @@ enum AppTab: Int, CaseIterable, Identifiable {
     
     var systemImage: String {
         switch self {
-        case .home: return "house.fill"
-        case .workouts: return "dumbbell.fill"
-        case .analytics: return "chart.bar.fill"
-        case .progression: return "arrow.up.right.circle.fill"
-        case .settings: return "gearshape.fill"
+        case .home: return "house"
+        case .workouts: return "dumbbell"
+        case .analytics: return "chart.bar"
+        case .progression: return "arrow.up.right.circle"
+        case .settings: return "gearshape"
         }
     }
 }
@@ -125,6 +125,17 @@ private struct TabCoordinatorContentView: View {
                     }
                     .tag(tab)
             }
+        }
+        .modifier(AdaptiveTabShellStyle())
+    }
+}
+
+private struct AdaptiveTabShellStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 18.0, *) {
+            content.tabViewStyle(.sidebarAdaptable)
+        } else {
+            content
         }
     }
 }

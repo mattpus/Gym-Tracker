@@ -104,7 +104,6 @@ struct ExerciseSelectionView: View {
         Group {
             if viewModel.isLoading {
                 ProgressView("Loading exercises...")
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if viewModel.filteredExercises.isEmpty {
                 ContentUnavailableView {
                     Label("No Exercises Found", systemImage: "dumbbell")

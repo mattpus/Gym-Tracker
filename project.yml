@@ -30,6 +30,7 @@ targets:
           - "Info.plist"
     resources:
       - App/Assets.xcassets
+      - App/LaunchScreen.storyboard
     info:
       path: App/Info.plist
     dependencies:
@@ -53,6 +54,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: ai.openclaw.gymtracker
         INFOPLIST_FILE: App/Info.plist
+        INFOPLIST_KEY_UILaunchStoryboardName: LaunchScreen
         TARGETED_DEVICE_FAMILY: 1,2
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SUPPORTS_MACCATALYST: NO

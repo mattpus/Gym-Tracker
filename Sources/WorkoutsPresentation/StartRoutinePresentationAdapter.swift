@@ -14,7 +14,7 @@ public final class StartRoutinePresentationAdapter {
 		
 		startRoutine.startRoutine(id: routineID) { [weak self] result in
 			switch result {
-			case .success:
+			case .success(_):
 				self?.presenter?.didFinishCommand()
 				
 			case let .failure(error):

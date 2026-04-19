@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23034" systemVersion="23G93" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ManagedWorkoutCache" representedClassName="ManagedWorkoutCache" syncable="YES">
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="workouts" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ManagedWorkout" inverseName="cache" inverseEntity="ManagedWorkout" syncable="YES"/>
+    </entity>
+    <entity name="ManagedWorkout" representedClassName="ManagedWorkout" syncable="YES">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="lastUpdatedAt" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="isFinished" attributeType="Boolean" usesScalarValueType="YES" syncable="YES" defaultValueString="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="cache" maxCount="1" deletionRule="Nullify" destinationEntity="ManagedWorkoutCache" inverseName="workouts" inverseEntity="ManagedWorkoutCache" syncable="YES"/>
+        <relationship name="exercises" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ManagedExercise" inverseName="workout" inverseEntity="ManagedExercise" syncable="YES"/>
+    </entity>
+    <entity name="ManagedExercise" representedClassName="ManagedExercise" syncable="YES">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="supersetID" optional="YES" attributeType="UUID" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="supersetOrder" optional="YES" attributeType="Integer 16" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="workout" maxCount="1" deletionRule="Nullify" destinationEntity="ManagedWorkout" inverseName="exercises" inverseEntity="ManagedWorkout" syncable="YES"/>
+        <relationship name="sets" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ManagedExerciseSet" inverseName="exercise" inverseEntity="ManagedExerciseSet" syncable="YES"/>
+    </entity>
+    <entity name="ManagedExerciseSet" representedClassName="ManagedExerciseSet" syncable="YES">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="order" attributeType="Integer 16" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="type" attributeType="String" syncable="YES" defaultValueString="main"/>
+        <attribute name="repetitions" optional="YES" attributeType="Integer 16" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="weight" optional="YES" attributeType="Double" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="duration" optional="YES" attributeType="Double" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="isCompleted" attributeType="Boolean" usesScalarValueType="YES" syncable="YES" defaultValueString="NO"/>
+        <relationship name="exercise" maxCount="1" deletionRule="Nullify" destinationEntity="ManagedExercise" inverseName="sets" inverseEntity="ManagedExercise" syncable="YES"/>
+    </entity>
+    <entity name="ManagedRoutineCache" representedClassName="ManagedRoutineCache" syncable="YES">
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="routines" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ManagedRoutine" inverseName="cache" inverseEntity="ManagedRoutine" syncable="YES"/>
+    </entity>
+    <entity name="ManagedRoutine" representedClassName="ManagedRoutine" syncable="YES">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="cache" maxCount="1" deletionRule="Nullify" destinationEntity="ManagedRoutineCache" inverseName="routines" inverseEntity="ManagedRoutineCache" syncable="YES"/>
+        <relationship name="exercises" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ManagedRoutineExercise" inverseName="routine" inverseEntity="ManagedRoutineExercise" syncable="YES"/>
+    </entity>
+    <entity name="ManagedRoutineExercise" representedClassName="ManagedRoutineExercise" syncable="YES">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" attributeType="String" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="routine" maxCount="1" deletionRule="Nullify" destinationEntity="ManagedRoutine" inverseName="exercises" inverseEntity="ManagedRoutine" syncable="YES"/>
+        <relationship name="sets" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ManagedRoutineSet" inverseName="exercise" inverseEntity="ManagedRoutineSet" syncable="YES"/>
+    </entity>
+    <entity name="ManagedRoutineSet" representedClassName="ManagedRoutineSet" syncable="YES">
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="order" attributeType="Integer 16" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="type" attributeType="String" syncable="YES" defaultValueString="main"/>
+        <attribute name="repetitions" optional="YES" attributeType="Integer 16" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="weight" optional="YES" attributeType="Double" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="duration" optional="YES" attributeType="Double" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="exercise" maxCount="1" deletionRule="Nullify" destinationEntity="ManagedRoutineExercise" inverseName="sets" inverseEntity="ManagedRoutineExercise" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="ManagedWorkoutCache" positionX="-63" positionY="-18" width="128" height="75"/>
+        <element name="ManagedWorkout" positionX="117" positionY="54" width="128" height="135"/>
+        <element name="ManagedExercise" positionX="305" positionY="54" width="128" height="135"/>
+        <element name="ManagedExerciseSet" positionX="493" positionY="54" width="128" height="150"/>
+        <element name="ManagedRoutineCache" positionX="-39" positionY="297" width="128" height="75"/>
+        <element name="ManagedRoutine" positionX="147" positionY="369" width="128" height="135"/>
+        <element name="ManagedRoutineExercise" positionX="335" positionY="369" width="128" height="135"/>
+        <element name="ManagedRoutineSet" positionX="523" positionY="369" width="128" height="150"/>
+    </elements>
+</model>

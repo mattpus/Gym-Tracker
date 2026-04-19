@@ -47,7 +47,7 @@ struct ExerciseLibraryView: View {
                     }
             }
         }
-        .listStyle(.insetGrouped)
+        .listStyle(.plain)
     }
 }
 

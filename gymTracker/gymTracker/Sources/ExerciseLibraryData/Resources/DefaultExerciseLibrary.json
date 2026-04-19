@@ -1,0 +1,770 @@
+[
+  {
+    "id": "d5cf9a64-3048-4c52-b823-e2a03c7e7681",
+    "name": "Barbell Bench Press",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroups": ["triceps", "shoulders"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111101",
+    "name": "Incline Barbell Bench Press",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroups": ["triceps", "shoulders"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111102",
+    "name": "Decline Barbell Bench Press",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroups": ["triceps"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111103",
+    "name": "Dumbbell Bench Press",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroups": ["triceps", "shoulders"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111104",
+    "name": "Incline Dumbbell Press",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroups": ["triceps", "shoulders"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111105",
+    "name": "Dumbbell Flyes",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111106",
+    "name": "Cable Crossover",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "cable",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111107",
+    "name": "Push-Up",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroups": ["triceps", "shoulders", "core"],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111108",
+    "name": "Chest Press Machine",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroups": ["triceps"],
+    "equipmentType": "machine",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111109",
+    "name": "Pec Deck Machine",
+    "primaryMuscleGroup": "chest",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "machine",
+    "isCustom": false
+  },
+  {
+    "id": "f6a5542c-1d5e-4f07-8389-4b9d8578c4e6",
+    "name": "Conventional Deadlift",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["hamstrings", "glutes", "core", "traps"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111201",
+    "name": "Sumo Deadlift",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["glutes", "quadriceps", "hamstrings"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111202",
+    "name": "Barbell Row",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["biceps", "lats"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111203",
+    "name": "Pendlay Row",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["biceps", "lats"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111204",
+    "name": "Dumbbell Row",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps", "back"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111205",
+    "name": "Pull-Up",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps", "back"],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111206",
+    "name": "Chin-Up",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps"],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111207",
+    "name": "Lat Pulldown",
+    "primaryMuscleGroup": "lats",
+    "secondaryMuscleGroups": ["biceps"],
+    "equipmentType": "cable",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111208",
+    "name": "Seated Cable Row",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["biceps", "lats"],
+    "equipmentType": "cable",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111209",
+    "name": "T-Bar Row",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["biceps", "lats"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111210",
+    "name": "Face Pull",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["shoulders", "traps"],
+    "equipmentType": "cable",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111211",
+    "name": "Hyperextension",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["glutes", "hamstrings"],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111301",
+    "name": "Overhead Press",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroups": ["triceps"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111302",
+    "name": "Seated Dumbbell Press",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroups": ["triceps"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111303",
+    "name": "Arnold Press",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroups": ["triceps"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111304",
+    "name": "Lateral Raise",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111305",
+    "name": "Front Raise",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111306",
+    "name": "Rear Delt Fly",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroups": ["back"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111307",
+    "name": "Cable Lateral Raise",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "cable",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111308",
+    "name": "Shoulder Press Machine",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroups": ["triceps"],
+    "equipmentType": "machine",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111309",
+    "name": "Upright Row",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroups": ["traps"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111401",
+    "name": "Barbell Curl",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroups": ["forearms"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111402",
+    "name": "Dumbbell Curl",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroups": ["forearms"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111403",
+    "name": "Hammer Curl",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroups": ["forearms"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111404",
+    "name": "Preacher Curl",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111405",
+    "name": "Incline Dumbbell Curl",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111406",
+    "name": "Cable Curl",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "cable",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111407",
+    "name": "Concentration Curl",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111501",
+    "name": "Close-Grip Bench Press",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroups": ["chest", "shoulders"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111502",
+    "name": "Tricep Pushdown",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "cable",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111503",
+    "name": "Skull Crusher",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111504",
+    "name": "Overhead Tricep Extension",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111505",
+    "name": "Tricep Dip",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroups": ["chest", "shoulders"],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111506",
+    "name": "Tricep Kickback",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111507",
+    "name": "Rope Pushdown",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "cable",
+    "isCustom": false
+  },
+  {
+    "id": "c32c0aad-d18f-4b9b-84c1-788f7c4340f3",
+    "name": "Barbell Back Squat",
+    "primaryMuscleGroup": "quadriceps",
+    "secondaryMuscleGroups": ["glutes", "hamstrings", "core"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111601",
+    "name": "Front Squat",
+    "primaryMuscleGroup": "quadriceps",
+    "secondaryMuscleGroups": ["glutes", "core"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111602",
+    "name": "Goblet Squat",
+    "primaryMuscleGroup": "quadriceps",
+    "secondaryMuscleGroups": ["glutes"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111603",
+    "name": "Leg Press",
+    "primaryMuscleGroup": "quadriceps",
+    "secondaryMuscleGroups": ["glutes", "hamstrings"],
+    "equipmentType": "machine",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111604",
+    "name": "Hack Squat",
+    "primaryMuscleGroup": "quadriceps",
+    "secondaryMuscleGroups": ["glutes"],
+    "equipmentType": "machine",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111605",
+    "name": "Leg Extension",
+    "primaryMuscleGroup": "quadriceps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "machine",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111606",
+    "name": "Walking Lunge",
+    "primaryMuscleGroup": "quadriceps",
+    "secondaryMuscleGroups": ["glutes", "hamstrings"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111607",
+    "name": "Bulgarian Split Squat",
+    "primaryMuscleGroup": "quadriceps",
+    "secondaryMuscleGroups": ["glutes", "hamstrings"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111608",
+    "name": "Step-Up",
+    "primaryMuscleGroup": "quadriceps",
+    "secondaryMuscleGroups": ["glutes"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111609",
+    "name": "Bodyweight Squat",
+    "primaryMuscleGroup": "quadriceps",
+    "secondaryMuscleGroups": ["glutes"],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111701",
+    "name": "Romanian Deadlift",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroups": ["glutes", "back"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111702",
+    "name": "Dumbbell Romanian Deadlift",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroups": ["glutes", "back"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111703",
+    "name": "Leg Curl",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "machine",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111704",
+    "name": "Seated Leg Curl",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "machine",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111705",
+    "name": "Good Morning",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroups": ["back", "glutes"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111706",
+    "name": "Stiff-Leg Deadlift",
+    "primaryMuscleGroup": "hamstrings",
+    "secondaryMuscleGroups": ["glutes", "back"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111801",
+    "name": "Hip Thrust",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroups": ["hamstrings"],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111802",
+    "name": "Glute Bridge",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroups": ["hamstrings"],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111803",
+    "name": "Cable Pull-Through",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroups": ["hamstrings"],
+    "equipmentType": "cable",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111804",
+    "name": "Glute Kickback Machine",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "machine",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111805",
+    "name": "Kettlebell Swing",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroups": ["hamstrings", "core", "shoulders"],
+    "equipmentType": "kettlebell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111901",
+    "name": "Standing Calf Raise",
+    "primaryMuscleGroup": "calves",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "machine",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111902",
+    "name": "Seated Calf Raise",
+    "primaryMuscleGroup": "calves",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "machine",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111903",
+    "name": "Donkey Calf Raise",
+    "primaryMuscleGroup": "calves",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "machine",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111111904",
+    "name": "Bodyweight Calf Raise",
+    "primaryMuscleGroup": "calves",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112001",
+    "name": "Plank",
+    "primaryMuscleGroup": "core",
+    "secondaryMuscleGroups": ["shoulders"],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112002",
+    "name": "Crunch",
+    "primaryMuscleGroup": "core",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112003",
+    "name": "Hanging Leg Raise",
+    "primaryMuscleGroup": "core",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112004",
+    "name": "Ab Wheel Rollout",
+    "primaryMuscleGroup": "core",
+    "secondaryMuscleGroups": ["shoulders"],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112005",
+    "name": "Cable Crunch",
+    "primaryMuscleGroup": "core",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "cable",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112006",
+    "name": "Russian Twist",
+    "primaryMuscleGroup": "core",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112007",
+    "name": "Dead Bug",
+    "primaryMuscleGroup": "core",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112008",
+    "name": "Mountain Climber",
+    "primaryMuscleGroup": "core",
+    "secondaryMuscleGroups": ["shoulders", "quadriceps"],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112009",
+    "name": "Side Plank",
+    "primaryMuscleGroup": "core",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112010",
+    "name": "Bicycle Crunch",
+    "primaryMuscleGroup": "core",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112101",
+    "name": "Barbell Shrug",
+    "primaryMuscleGroup": "traps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112102",
+    "name": "Dumbbell Shrug",
+    "primaryMuscleGroup": "traps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112103",
+    "name": "Farmer's Walk",
+    "primaryMuscleGroup": "traps",
+    "secondaryMuscleGroups": ["forearms", "core"],
+    "equipmentType": "dumbbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112201",
+    "name": "Wrist Curl",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112202",
+    "name": "Reverse Wrist Curl",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "barbell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112203",
+    "name": "Plate Pinch",
+    "primaryMuscleGroup": "forearms",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "bodyweight",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112301",
+    "name": "Kettlebell Goblet Squat",
+    "primaryMuscleGroup": "quadriceps",
+    "secondaryMuscleGroups": ["glutes", "core"],
+    "equipmentType": "kettlebell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112302",
+    "name": "Kettlebell Clean",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroups": ["back", "glutes"],
+    "equipmentType": "kettlebell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112303",
+    "name": "Kettlebell Snatch",
+    "primaryMuscleGroup": "shoulders",
+    "secondaryMuscleGroups": ["back", "glutes", "core"],
+    "equipmentType": "kettlebell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112304",
+    "name": "Kettlebell Turkish Get-Up",
+    "primaryMuscleGroup": "core",
+    "secondaryMuscleGroups": ["shoulders", "glutes"],
+    "equipmentType": "kettlebell",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112401",
+    "name": "Band Pull-Apart",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["shoulders"],
+    "equipmentType": "band",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112402",
+    "name": "Band Face Pull",
+    "primaryMuscleGroup": "back",
+    "secondaryMuscleGroups": ["shoulders", "traps"],
+    "equipmentType": "band",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112403",
+    "name": "Band Bicep Curl",
+    "primaryMuscleGroup": "biceps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "band",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112404",
+    "name": "Band Tricep Extension",
+    "primaryMuscleGroup": "triceps",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "band",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112405",
+    "name": "Band Lateral Walk",
+    "primaryMuscleGroup": "glutes",
+    "secondaryMuscleGroups": [],
+    "equipmentType": "band",
+    "isCustom": false
+  },
+  {
+    "id": "a1b2c3d4-1111-1111-1111-111111112406",
+    "name": "Band Squat",
+    "primaryMuscleGroup": "quadriceps",
+    "secondaryMuscleGroups": ["glutes"],
+    "equipmentType": "band",
+    "isCustom": false
+  }
+]

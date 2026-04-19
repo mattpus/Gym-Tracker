@@ -19,7 +19,7 @@ final class ScheduleWorkoutUseCaseTests: XCTestCase {
 		let (sut, repository) = makeSUT()
 		repository.loadResult = .success([existing])
 		
-		expect(sut, scheduling: newWorkout, toCompleteWith: .success(()))
+		expect(sut, scheduling: newWorkout, toCompleteWith: .success(newWorkout))
 		
 		XCTAssertEqual(repository.messages, [.load, .save([existing, newWorkout])])
 	}
@@ -30,7 +30,7 @@ final class ScheduleWorkoutUseCaseTests: XCTestCase {
 		repository.loadResult = .success([workout])
 		let updated = Workout(id: workout.id, date: workout.date, name: "Updated", exercises: workout.exercises)
 		
-		expect(sut, scheduling: updated, toCompleteWith: .success(()))
+		expect(sut, scheduling: updated, toCompleteWith: .success(updated))
 		
 		XCTAssertEqual(repository.messages, [.load, .save([updated])])
 	}
@@ -66,8 +66,8 @@ final class ScheduleWorkoutUseCaseTests: XCTestCase {
 		
 		sut.schedule(workout) { receivedResult in
 			switch (receivedResult, expectedResult) {
-			case (.success, .success):
-				break
+			case let (.success(received), .success(expected)):
+				XCTAssertEqual(received, expected, file: file, line: line)
 				
 			case let (.failure(received as NSError), .failure(expected as NSError)):
 				XCTAssertEqual(received, expected, file: file, line: line)

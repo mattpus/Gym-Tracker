@@ -41,7 +41,7 @@ final class StartEmptyWorkoutUseCaseTests: XCTestCase {
 		
 		func schedule(_ workout: Workout, completion: @escaping (WorkoutScheduling.Result) -> Void) {
 			scheduled.append(workout)
-			completion(.success(()))
+			completion(.success(workout))
 		}
 	}
 }

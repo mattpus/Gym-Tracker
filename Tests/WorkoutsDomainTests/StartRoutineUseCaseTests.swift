@@ -123,7 +123,7 @@ final class StartRoutineUseCaseTests: XCTestCase {
 		
 		func schedule(_ workout: Workout, completion: @escaping (WorkoutScheduling.Result) -> Void) {
 			scheduledWorkouts.append(workout)
-			completion(.success(()))
+			completion(.success(workout))
 		}
 	}
 }

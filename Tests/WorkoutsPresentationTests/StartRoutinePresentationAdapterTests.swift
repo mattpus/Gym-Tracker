@@ -7,9 +7,10 @@ final class StartRoutinePresentationAdapterTests: XCTestCase {
 	
 	func test_startRoutine_notifiesPresenterOnSuccess() {
 		let (sut, useCase, views) = makeSUT()
+		let workout = makeWorkout()
 		
 		sut.startRoutine(withID: UUID())
-		useCase.complete(with: .success(()))
+		useCase.complete(with: .success(workout))
 		
 		XCTAssertEqual(useCase.messages, [.start])
 		XCTAssertEqual(views.loading, [.init(isLoading: true), .init(isLoading: false)])
@@ -20,9 +21,10 @@ final class StartRoutinePresentationAdapterTests: XCTestCase {
 	func test_startRoutine_notifiesPresenterOnFailure() {
 		let (sut, useCase, views) = makeSUT()
 		let error = NSError(domain: "test", code: 0)
+		let result = WorkoutScheduling.Result.failure(error)
 		
 		sut.startRoutine(withID: UUID())
-		useCase.complete(with: .failure(error))
+		useCase.complete(with: result)
 		
 		XCTAssertEqual(views.loading, [.init(isLoading: true), .init(isLoading: false)])
 		XCTAssertEqual(views.commandMessages, [])
@@ -53,6 +55,10 @@ final class StartRoutinePresentationAdapterTests: XCTestCase {
 		trackForMemoryLeaks(presenter, file: file, line: line)
 		trackForMemoryLeaks(sut, file: file, line: line)
 		return (sut, useCase, views)
+	}
+
+	private func makeWorkout() -> Workout {
+		Workout(date: Date(), name: "Started", exercises: [])
 	}
 	
 	private final class StartRoutineUseCaseSpy: RoutineStarting {

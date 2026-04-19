@@ -7,9 +7,10 @@ final class StartEmptyWorkoutPresentationAdapterTests: XCTestCase {
 	
 	func test_start_notifiesPresenterOnSuccess() {
 		let (sut, starter, view) = makeSUT()
+		let workout = makeWorkout()
 		
 		sut.start(name: nil)
-		starter.complete(with: .success(()))
+		starter.complete(with: .success(workout))
 		
 		XCTAssertEqual(view.loading, [.init(isLoading: true), .init(isLoading: false)])
 		XCTAssertEqual(view.commandMessages, [.init(message: "Started")])
@@ -18,11 +19,17 @@ final class StartEmptyWorkoutPresentationAdapterTests: XCTestCase {
 	func test_start_notifiesPresenterOnFailure() {
 		let (sut, starter, view) = makeSUT()
 		let error = NSError(domain: "test", code: 0)
+		let result = WorkoutScheduling.Result.failure(error)
 		
 		sut.start(name: nil)
-		starter.complete(with: .failure(error))
+		starter.complete(with: result)
 		
-		XCTAssertEqual(view.errors.last?.message, "Something went wrong. Please try again.")
+		XCTAssertEqual(view.loading, [.init(isLoading: true), .init(isLoading: false)])
+		XCTAssertEqual(view.commandMessages, [])
+		XCTAssertEqual(view.errors, [
+			.init(message: nil),
+			.init(message: "Something went wrong. Please try again.")
+		])
 	}
 	
 	// MARK: - Helpers
@@ -46,6 +53,10 @@ final class StartEmptyWorkoutPresentationAdapterTests: XCTestCase {
 		trackForMemoryLeaks(presenter, file: file, line: line)
 		trackForMemoryLeaks(sut, file: file, line: line)
 		return (sut, starter, view)
+	}
+
+	private func makeWorkout() -> Workout {
+		Workout(date: Date(), name: "Started", exercises: [])
 	}
 	
 	private final class StarterSpy: EmptyWorkoutStarting {

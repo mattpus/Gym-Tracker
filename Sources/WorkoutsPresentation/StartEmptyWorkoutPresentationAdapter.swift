@@ -14,7 +14,7 @@ public final class StartEmptyWorkoutPresentationAdapter {
 		
 		starter.startEmptyWorkout(named: name) { [weak self] result in
 			switch result {
-			case .success:
+			case .success(_):
 				self?.presenter?.didFinishCommand()
 			case let .failure(error):
 				self?.presenter?.didFinishCommand(with: error)

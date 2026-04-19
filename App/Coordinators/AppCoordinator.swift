@@ -14,6 +14,8 @@ final class AppCoordinator: Coordinator {
     }
     
     func start() {
+        guard tabCoordinator == nil else { return }
+
         let tabCoordinator = TabCoordinator(container: container)
         self.tabCoordinator = tabCoordinator
         addChild(tabCoordinator)
@@ -25,7 +27,8 @@ final class AppCoordinator: Coordinator {
         if let tabCoordinator {
             TabCoordinatorView(coordinator: tabCoordinator)
         } else {
-            ProgressView("Loading...")
+            ProgressView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }
@@ -35,6 +38,13 @@ struct AppCoordinatorView: View {
     let coordinator: AppCoordinator
     
     var body: some View {
-        coordinator.rootView()
+        ZStack(alignment: .topLeading) {
+            Color.yellow.opacity(0.25)
+                .ignoresSafeArea()
+
+            Text("Root view is rendering")
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+        }
     }
 }
